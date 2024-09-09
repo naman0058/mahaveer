@@ -1,0 +1,398 @@
+<%- include ('.././header.ejs') %>
+
+
+		<!-- Main Content -->
+		<div class="hk-pg-wrapper pb-0">
+			<!-- Page Body -->
+			<div class="hk-pg-body py-0">
+				<div class="contactapp-wrap">
+					
+					<div class="contactapp-content">
+						<div class="contactapp-detail-wrap">
+							<header class="contact-header">
+								<div class="d-flex align-items-center">
+									<div class="dropdown">
+										<a class="contactapp-title link-dark" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+											<h1>Customer List</h1>
+										</a>
+									
+									</div>
+								
+								</div>
+							
+							</header>
+
+
+							<style>
+								.contact-card .card {
+									height: 100%; /* Ensures card stretches to fill the column height */
+									display: flex;
+									flex-direction: column; /* Allows content to flow from top to bottom */
+								}
+							
+								.contact-card .card-body {
+									flex-grow: 1; /* Makes the body grow to fill available space */
+									display: flex;
+									flex-direction: column;
+									align-items: center; /* Centers content horizontally */
+									justify-content: center; /* Centers content vertically */
+									text-align: center;
+								}
+							
+								.contact-card .avatar {
+									margin-bottom: 10px; /* Adds spacing below the avatar */
+								}
+							
+								.contact-card .user-name, 
+								.contact-card .user-email, 
+								.contact-card .user-contact {
+									overflow: hidden;
+									text-overflow: ellipsis; /* Adds "..." to overflow text */
+									white-space: nowrap; /* Prevents text from wrapping to the next line */
+									width: 100%; /* Ensures full width */
+								}
+							
+								.contact-card .card-footer {
+									display: flex;
+									justify-content: center; /* Centers the footer content horizontally */
+								}
+							
+								.contact-card {
+									min-height: 300px; /* Sets a minimum height for the card to ensure consistency */
+								}
+							</style>
+
+							<div class="contact-body">
+								<div data-simplebar class="nicescroll-bar">
+
+
+                                    <div class="container">
+                                        <!-- Search Input -->
+                                        <div class="mb-4">
+                                            <input type="text" id="search-input" class="form-control" placeholder="Search Customer...">
+                                        </div>
+                                    
+                                        <!-- Card Grid -->
+                                        <div class="row" id="contact-cards">
+                                            <!-- Contact Card 1 -->
+
+                                            <% for(i=0;i<result.length;i++) { %>
+
+                                            <div class="col-xl-3 col-lg-4 col-md-6 mb-4 contact-card">
+                                                <div class="card card-border contact-card">
+													<div class="card-body text-center">
+													
+														<div class="avatar avatar-xl avatar-rounded">
+															<img src="<%=result[i].photo%>" alt="user" class="avatar-img">
+														</div>
+														<div class="user-name"></span><%=result[i].name.toUpperCase()%> S/O (<%=result[i].father_name.toUpperCase()%>)</div>
+														<div class="user-name"></span></div>
+
+														<div class="user-email"><%=result[i].number%></div>
+														<div class="user-contact"><%=result[i].address%></div>
+													</div>
+													<div class="card-footer text-muted position-relative">
+														<a href="/dashboard/view/loan?customerid=<%=result[i].id%>" class="d-flex align-items-center">
+															<span class="fs-7 lh-1">View Loan</span>
+														</a>
+														
+													</div>
+												</div>
+                                            </div>
+                                    
+                                            <% } %>
+                                            <!-- Contact Card 2 -->
+                                         
+                                    
+                                            <!-- Additional cards... -->
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Include Feather Icons -->
+                                    <script>
+                                        // feather.replace();
+                                    
+                                        // Search functionality
+                                        document.getElementById('search-input').addEventListener('input', function() {
+                                            const searchTerm = this.value.toLowerCase();
+                                            const cards = document.querySelectorAll('.contact-card');
+                                    
+                                            cards.forEach(card => {
+                                                const textContent = card.textContent.toLowerCase();
+                                                if (textContent.includes(searchTerm)) {
+                                                    card.style.display = 'block';
+                                                } else {
+                                                    card.style.display = 'none';
+                                                }
+                                            });
+                                        });
+                                    </script>
+                                    
+									
+									
+								</div>
+							</div>
+						</div>
+						<!-- Edit Info -->
+						<div id="add_new_contact" class="modal fade add-new-contact" tabindex="-1" role="dialog" aria-hidden="true">
+							<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+								<div class="modal-content">
+									<div class="modal-body">
+										<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+											<span aria-hidden="true">×</span>
+										</button>
+										<h5 class="mb-5">Create New Conatct</h5>
+										<form>
+											<div class="row gx-3">
+												<div class="col-sm-2 form-group">
+													<div class="dropify-square">
+														<input type="file"  class="dropify-1"/>
+													</div>
+												</div>
+												<div class="col-sm-10 form-group">
+													<textarea class="form-control mnh-100p" rows="4" placeholder="Add Biography"></textarea>
+												</div>
+											</div>
+											<div class="title title-xs title-wth-divider text-primary text-uppercase my-4"><span>Basic Info</span></div>
+											<div class="row gx-3">
+												<div class="col-sm-4">
+													<div class="form-group">
+														<label class="form-label">First Name</label>
+														<input class="form-control" type="text"/>
+													</div>
+												</div>
+												<div class="col-sm-4">
+													<div class="form-group">
+														<label class="form-label">Middle Name</label>
+														<input class="form-control" type="text"/>
+													</div>
+												</div>
+												<div class="col-sm-4">
+													<div class="form-group">
+														<label class="form-label">Last Name</label>
+														<input class="form-control" type="text"/>
+													</div>
+												</div>
+											</div>
+											<div class="row gx-3">
+												<div class="col-sm-6">
+													<div class="form-group">
+														<label class="form-label">Email ID</label>
+														<input class="form-control" type="text"/>
+													</div>
+												</div>
+												<div class="col-sm-6">
+													<div class="form-group">
+														<label class="form-label">Phone</label>
+														<input class="form-control" type="text"/>
+													</div>
+												</div>
+											</div>
+											<div class="row gx-3">
+												<div class="col-sm-4">
+													<div class="form-group">
+														<label class="form-label">City</label>
+														<select class="form-select">
+															<option selected="">--</option>
+															<option value="1">One</option>
+															<option value="2">Two</option>
+															<option value="3">Three</option>
+														</select>
+													</div>
+												</div>
+												<div class="col-sm-4">
+													<div class="form-group">
+														<label class="form-label">State</label>
+														<select class="form-select">
+															<option selected="">--</option>
+															<option value="1">One</option>
+															<option value="2">Two</option>
+															<option value="3">Three</option>
+														</select>
+													</div>
+												</div>
+												<div class="col-sm-4">
+													<div class="form-group">
+														<label class="form-label">Country</label>
+														<select class="form-select">
+															<option selected="">--</option>
+															<option value="1">One</option>
+															<option value="2">Two</option>
+															<option value="3">Three</option>
+														</select>
+													</div>
+												</div>
+											</div>
+											<div class="title title-xs title-wth-divider text-primary text-uppercase my-4"><span>Company Info</span></div>
+											<div class="row gx-3">
+												<div class="col-sm-6">
+													<div class="form-group">
+														<label class="form-label">Company Name</label>
+														<input class="form-control" type="text"/>
+													</div>
+												</div>
+												<div class="col-sm-6">
+													<div class="form-group">
+														<label class="form-label">Designation</label>
+														<input class="form-control" type="text"/>
+													</div>
+												</div>
+												<div class="col-sm-6">
+													<div class="form-group">
+														<label class="form-label">Website</label>
+														<input class="form-control" type="text"/>
+													</div>
+												</div>
+												<div class="col-sm-6">
+													<div class="form-group">
+														<label class="form-label">Work Phone</label>
+														<input class="form-control" type="text"/>
+													</div>
+												</div>
+											</div>
+											<div class="title title-xs title-wth-divider text-primary text-uppercase my-4"><span>Additional Info</span></div>
+											<div class="row gx-3">
+												<div class="col-sm-12">
+													<div class="form-group">
+														<label class="form-label">Tags</label>
+														<select id="input_tags_2" class="form-control" multiple="multiple">
+														</select>
+														<small class="form-text text-muted">
+														   You can add upto 4 tags per contact
+														</small>
+													</div>
+												</div>
+											</div>
+											<div class="row gx-3">
+												<div class="col-sm-6">
+													<div class="form-group">
+														<input class="form-control" type="text" placeholder="Facebook"/>
+													</div>
+												</div>
+												<div class="col-sm-6">
+													<div class="form-group">
+														<input class="form-control" type="text" placeholder="Twitter"/>
+													</div>
+												</div>
+												<div class="col-sm-6">
+													<div class="form-group">
+														<input class="form-control" type="text" placeholder="LinkedIn"/>
+													</div>
+												</div>
+												<div class="col-sm-6">
+													<div class="form-group">
+														<input class="form-control" type="text" placeholder="Gmail"/>
+													</div>
+												</div>
+											</div>
+										</form>
+									</div>
+									<div class="modal-footer align-items-center">
+										<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Discard</button>
+										<button type="button" class="btn btn-primary" data-bs-dismiss="modal">Create Contact</button>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- /Edit Info -->
+						
+						<!-- Add Label -->
+						<div id="add_new_label" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+							<div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+								<div class="modal-content">
+									<div class="modal-body">
+										<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+											<span aria-hidden="true">×</span>
+										</button>
+										<h6 class="text-uppercase fw-bold mb-3">Add Label</h6>
+										<form>
+											<div class="row gx-3">
+												<div class="col-sm-12">
+													<div class="form-group">
+														<input class="form-control" type="text" placeholder="Label Name"/>
+													</div>
+												</div>
+											</div>
+											<button type="button" class="btn btn-primary float-end" data-bs-dismiss="modal">Add</button>
+										</form>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- Add Label -->
+						
+						<!-- Add Tag -->
+						<div id="add_new_tag" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+							<div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+								<div class="modal-content">
+									<div class="modal-body">
+										<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+											<span aria-hidden="true">×</span>
+										</button>
+										<h6 class="text-uppercase fw-bold mb-3">Add Tag</h6>
+										<form>
+											<div class="row gx-3">
+												<div class="col-sm-12">
+													<div class="form-group">
+														<select id="input_tags_3" class="form-control" multiple="multiple">
+															<option selected="selected">Collaborator</option>
+															<option selected="selected">Designer</option>
+															<option selected="selected">React Developer</option>
+															<option selected="selected">Promotion</option>
+															<option selected="selected">Advertisement</option>
+														</select>
+													</div>
+												</div>
+											</div>
+											<button type="button" class="btn btn-primary float-end" data-bs-dismiss="modal">Add</button>
+										</form>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- Add Tag -->
+					</div>
+				</div>
+			</div>
+			<!-- /Page Body -->
+		</div>
+		<!-- /Main Content -->
+	</div>
+    <!-- /Wrapper -->
+
+	<!-- jQuery -->
+    <script src="/vendors/jquery/dist/jquery.min.js"></script>
+
+    <!-- Bootstrap Core JS -->
+   	<script src="/vendors/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- FeatherIcons JS -->
+    <script src="/dist/js/feather.min.js"></script>
+
+    <!-- Fancy Dropdown JS -->
+    <script src="/dist/js/dropdown-bootstrap-extended.js"></script>
+
+	<!-- Simplebar JS -->
+	<script src="/vendors/simplebar/dist/simplebar.min.js"></script>
+	
+	<!-- Data Table JS -->
+    <script src="/vendors/datatables.net/js/dataTables.min.js"></script>
+    <script src="/vendors/datatables.net-bs5/js/dataTables.bootstrap5.min.js"></script>
+	<script src="/vendors/datatables.net-select/js/dataTables.select.min.js"></script>
+    
+	<!-- Select2 JS -->
+    <script src="/vendors/select2//dist/js/select2.full.min.js"></script>
+    <script src="/dist/js/select2-data.js"></script>
+	
+	<!-- Dropify JS -->
+	<script src="/vendors/dropify//dist/js/dropify.min.js"></script>
+	<script src="/dist/js/dropify-data.js"></script>
+
+	<!-- Init JS -->
+	<script src="/dist/js/init.js"></script>
+	<script src="/dist/js/contact-data.js"></script>
+	<script src="/dist/js/chips-init.js"></script>
+</body>
+
+<!-- Mirrored from hencework.com/theme/jampack/horizontal/contact.html by HTTrack Website Copier/3.x [XR&CO'2014], Sat, 07 Sep 2024 04:23:05 GMT -->
+</html>
