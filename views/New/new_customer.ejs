@@ -14,7 +14,9 @@
                         <div class="input-group w-300p">
                             <span class="input-affix-wrapper">
                                 <span class="input-prefix"><span class="feather-icon"><i data-feather="calendar"></i></span></span>
-                                <input class="form-control form-wth-icon" name="datetimes" value="Aug 18,2020 - Aug 19, 2020" readonly>
+                                <input class="form-control form-wth-icon" name="date" id="date" readonly>
+
+
                             </span>
                         </div>
                     </div>
@@ -39,7 +41,11 @@
 		<label for="inputAddress" class="form-label">Mobile Number</label>
 		<input type="text" name="number" id="number" class="form-control"  placeholder="Mobile Number">
 	</div>
-	<div class="col-md-6">
+    <div class="col-md-6">
+		<label for="inputAddress" class="form-label">Alternate Mobile Number</label>
+		<input type="text" name="alternate_number" id="alternate_number" class="form-control"  placeholder="Mobile Number">
+	</div>
+	<div class="col-md-12">
 		<label for="inputAddress2" class="form-label">Photo</label>
 		<input type="file" class="form-control" id="photo">
 	</div>
@@ -70,6 +76,8 @@ function submitForm() {
     const number = $('#number').val();
     const photo = $('#photo').val();
     const address = $('#address').val();
+    const alternate_number = $('#alternate_number').val();
+
 
     // Basic validation checks
     if (name === '') {
@@ -114,7 +122,7 @@ function submitForm() {
             const photoUrl = data.url; // Get uploaded photo URL
 
             // Send customer data to the server
-            $.post('/dashboard/data/customer/insert', { photo: photoUrl, name, number, father_name, address }, (data) => {
+            $.post('/dashboard/data/customer/insert', { photo: photoUrl, name, number, father_name, address,alternate_number }, (data) => {
                 if (data.msg === 'success') {
                     alert('Success');
                     window.location.reload()
@@ -130,7 +138,6 @@ function submitForm() {
             loaderOverlay.style.display = "none"; // Hide overlay if there's an error
         });
 }
-
 
 
   </script>

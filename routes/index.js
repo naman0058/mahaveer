@@ -50,7 +50,7 @@ router.get('/dashboard/:pagename',verify.vendorAuthenticationToken,(req,res)=>{
 //           const timeDiff = verify.calculateTimeDifference(item.created_at, currentDate);
 //           const months = timeDiff.years * 12 + timeDiff.months;
 //           const days = verify.calculateTimeDifferenceInDays(item.created_at, currentDate);
-//           const dailyRate = item.rate_of_interest / 30; // Assuming 30 days in a month
+//           const dailyRate = item.rate_of_interest / 31; // Assuming 30 days in a month
 //              const interestAmount = verify.calculateInterest(item.amount, dailyRate, days);
 //              console.log(item.amount, dailyRate, days)
 //           return {
@@ -125,7 +125,7 @@ router.get('/dashboard/:tablename/list', verify.vendorAuthenticationToken, async
       const updatedResults = rows.map(item => {
         const timeDiff = verify.calculateTimeDifference(item.created_at, currentDate);
         const days = verify.calculateTimeDifferenceInDays(item.created_at, currentDate);
-        const dailyRate = item.rate_of_interest / 30; // Assuming 30 days in a month
+        const dailyRate = item.rate_of_interest / 31; // Assuming 30 days in a month
         const interestAmount = verify.calculateInterest(item.amount, dailyRate, days);
         
         return {
@@ -189,7 +189,7 @@ LIMIT ? OFFSET ?
       const updatedResults = rows.map(item => {
         const timeDiff = verify.calculateTimeDifference(item.created_at, currentDate);
         const days = verify.calculateTimeDifferenceInDays(item.created_at, currentDate);
-        const dailyRate = item.rate_of_interest / 30; // Assuming 30 days in a month
+        const dailyRate = item.rate_of_interest / 31; // Assuming 30 days in a month
         const interestAmount = verify.calculateInterest(item.amount, dailyRate, days);
         
         return {
@@ -252,7 +252,7 @@ LIMIT ? OFFSET ?
       const updatedResults = rows.map(item => {
         const timeDiff = verify.calculateTimeDifference(item.transfer_date, currentDate);
         const days = verify.calculateTimeDifferenceInDays(item.transfer_date, currentDate);
-        const dailyRate = item.rate_of_interest / 30; // Assuming 30 days in a month
+        const dailyRate = item.transfer_rate / 31; // Assuming 30 days in a month
         const interestAmount = verify.calculateInterest(item.amount, dailyRate, days);
         
         return {
@@ -284,28 +284,50 @@ router.get('/loan/transfer',(req,res)=>{
 
 
 
-router.get('/loan/assign', (req, res) => {
+router.get('/loan/assign', async (req, res) => {
   const { investorid, loanid } = req.query;
-  const today = verify.getCurrentDate()
+  const today = verify.getCurrentDate();
 
   // Validate input to prevent SQL Injection and other errors
   if (!investorid || !loanid) {
     return res.status(400).json({ msg: 'Invalid input data' });
   }
 
-  // Use prepared statements to avoid SQL injection and improve performance
-  const query = `UPDATE loan SET istransfer = ?, investorid = ?, transfer_date = ? WHERE id = ?`;
-  const values = ['yes', investorid, today, loanid];
+  try {
+    // Use a prepared statement to fetch loan amount
+    const [loanResult] = await queryAsync('SELECT amount FROM loan WHERE id = ?', [loanid]);
 
-  pool.query(query, values, (err, result) => {
-    if (err) {
-      console.error('Error updating loan:', err);
-      return res.status(500).json({ msg: 'Server error' });
+    if (loanResult.length === 0) {
+      return res.status(404).json({ msg: 'Loan not found' });
     }
 
+
+    const amount = loanResult.amount;
+
+    // Use a prepared statement to fetch investor details
+    const [investorResult] = await queryAsync('SELECT interest_rate1, interest_rate2 FROM investor WHERE id = ?', [investorid]);
+
+    if (investorResult.length === 0) {
+      return res.status(404).json({ msg: 'Investor not found' });
+    }
+
+    // Determine the transfer rate based on the amount
+    const transfer_rate = amount < 200000 ? investorResult.interest_rate1 : investorResult.interest_rate2;
+
+    // Update the loan using a prepared statement
+    await queryAsync(
+      'UPDATE loan SET istransfer = ?, investorid = ?, transfer_date = ?, transfer_rate = ? WHERE id = ?',
+      ['yes', investorid, today, transfer_rate, loanid]
+    );
+
     res.redirect('/dashboard/loan/list');
-  });
+
+  } catch (err) {
+    console.error('Error processing loan assignment:', err);
+    res.status(500).json({ msg: 'Server error' });
+  }
 });
+
 
 
 

@@ -88,7 +88,10 @@
 														<div class="user-name"></span><%=result[i].name.toUpperCase()%> S/O (<%=result[i].father_name.toUpperCase()%>)</div>
 														<div class="user-name"></span></div>
 
-														<div class="user-email"><%=result[i].number%></div>
+														<div class="user-email">
+															<%= result[i].number %> 
+															<% if (result[i].alternate_number) { %> / <%= result[i].alternate_number %> <% } %>
+														  </div>
 														<div class="user-contact"><%=result[i].address%></div>
 													</div>
 													<div class="card-footer text-muted position-relative">
