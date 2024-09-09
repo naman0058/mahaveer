@@ -384,7 +384,7 @@ console.log(today_date)
       const vendorid = result[0].id;
       req.session.vendorid = result[0].id;
       // Handle successful login
-      res.send(`Welcome, vendor with ID ${vendorid}`); // Example response
+      res.redirect('/')
     } else {
       // Handle unsuccessful login
       res.redirect('/login?message=Account Not Found or Account Suspended');
