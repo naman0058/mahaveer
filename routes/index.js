@@ -101,7 +101,7 @@ router.get('/dashboard/:tablename/list', verify.vendorAuthenticationToken, async
         FROM ${tablename} t
         JOIN customer c ON c.id = t.customerid
         LEFT JOIN  investor i ON i.id = t.investorid
-        WHERE t.vendorid = ?
+        WHERE t.vendorid = ? and t.status = 'pending'
         ORDER BY t.id DESC
         LIMIT ? OFFSET ?
       `;
@@ -174,7 +174,7 @@ JOIN
 LEFT JOIN 
     investor i ON i.id = t.investorid -- Join the investor table to get the investor name
 WHERE 
-    t.customerid = ?
+    t.customerid = ? and t.status = 'pending'
 ORDER BY 
     t.id DESC
 LIMIT ? OFFSET ?
@@ -199,7 +199,7 @@ LIMIT ? OFFSET ?
         };
       });
       
-      res.render(`${listFolder}/loan`, { title: 'Express', result: updatedResults, tablename:'loan' });
+      res.render(`${listFolder}/userloan`, { title: 'Express', result: updatedResults, tablename:'loan',customerid:req.query.customerid });
     
     
   } catch (err) {
@@ -237,7 +237,7 @@ JOIN
 LEFT JOIN 
     investor i ON i.id = t.investorid -- Join the investor table to get the investor name
 WHERE 
-    t.investorid = ?
+    t.investorid = ? and t.status = 'pending'
 ORDER BY 
     t.id DESC
 LIMIT ? OFFSET ?
@@ -262,7 +262,7 @@ LIMIT ? OFFSET ?
         };
       });
       
-      res.render(`${listFolder}/investment`, { title: 'Express', result: updatedResults, tablename:'loan' });
+      res.render(`${listFolder}/investment`, { title: 'Express', result: updatedResults, tablename:'loan' , investorid : req.query.investorid });
     
     
   } catch (err) {
@@ -271,6 +271,67 @@ LIMIT ? OFFSET ?
   }
 });
 
+
+
+
+router.get('/dashboard/loan/details', verify.vendorAuthenticationToken, async (req, res) => {
+
+
+  const limit = 100; // Number of records per page
+  const page = parseInt(req.query.page) || 1;
+  const offset = (page - 1) * limit;
+
+  try {
+    let query, values;
+
+      query = `
+        SELECT 
+    t.*, 
+    c.name AS customername, 
+    c.number AS customernumber, 
+    c.father_name AS customefather_name, 
+    c.address AS customeraddress,
+    i.name AS investorname -- Add the investor name from the investor table
+FROM 
+    loan t
+JOIN 
+    customer c ON c.id = t.customerid
+LEFT JOIN 
+    investor i ON i.id = t.investorid -- Join the investor table to get the investor name
+WHERE 
+    t.id = ?
+ORDER BY 
+    t.id DESC
+LIMIT ? OFFSET ?
+      `;
+      values = [req.query.loanid, limit, offset];
+    
+
+    // Execute the query
+    const [rows] = await pool.promise().query(query, values);
+
+      const currentDate = verify.getCurrentDate();
+      const updatedResults = rows.map(item => {
+        const timeDiff = verify.calculateTimeDifference(item.created_at, currentDate);
+        const days = verify.calculateTimeDifferenceInDays(item.created_at, currentDate);
+        const dailyRate = item.rate_of_interest / 31; // Assuming 30 days in a month
+        const interestAmount = verify.calculateInterest(item.amount, dailyRate, days);
+        
+        return {
+          ...item,
+          timeDiff,
+          interestAmount,
+        };
+      });
+      
+      res.render(`${newFolder}/loandetails`, { title: 'Express', result: updatedResults, tablename:'loan' });
+    
+    
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ msg: 'Server error' });
+  }
+});
 
 
 router.get('/loan/transfer',(req,res)=>{
@@ -364,7 +425,8 @@ router.post('/dashboard/data/:tablename/insert', async (req, res) => {
   const body = req.body;
   body.created_at = verify.getCurrentDate();
   body.updated_at = verify.getCurrentDate();
-  body.vendorid = req.session.vendorid
+  body.vendorid = req.session.vendorid;
+  body.status = 'pending'
 
   console.log('body comes',body)
 
@@ -418,6 +480,90 @@ console.log(today_date)
 });
 
 
+
+
+router.post('/dashboard/clear/loan',(req,res)=>{
+  let today = verify.getCurrentDate();
+  pool.query(`update loan set customer_image = '${req.body.customer_image}' , status = 'clear' , updated_at = '${today}' where id = '${req.body.loanid}'`,(err,result)=>{
+    if(err) throw err;
+    else res.json({msg:'success'})
+  })
+})
+
+
+
+router.get('/dashboard/loan/history',(req,res)=>{
+  pool.query(`SELECT 
+    t.*, 
+    c.name AS customername, 
+    c.number AS customernumber, 
+    c.father_name AS customefather_name, 
+    c.address AS customeraddress,
+    i.name AS investorname -- Add the investor name from the investor table
+FROM 
+    loan t
+JOIN 
+    customer c ON c.id = t.customerid
+LEFT JOIN 
+    investor i ON i.id = t.investorid -- Join the investor table to get the investor name
+WHERE 
+    t.vendorid = '${req.session.vendorid}' and t.status = 'clear'
+ORDER BY 
+    t.id DESC`,(err,result)=>{
+    if(err) throw err;
+    else res.render(`${listFolder}/history`,{result})
+  })
+})
+
+
+
+router.get('/dashboard/user/history',(req,res)=>{
+  pool.query(`SELECT 
+    t.*, 
+    c.name AS customername, 
+    c.number AS customernumber, 
+    c.father_name AS customefather_name, 
+    c.address AS customeraddress,
+    i.name AS investorname -- Add the investor name from the investor table
+FROM 
+    loan t
+JOIN 
+    customer c ON c.id = t.customerid
+LEFT JOIN 
+    investor i ON i.id = t.investorid -- Join the investor table to get the investor name
+WHERE 
+    t.customerid = '${req.query.customerid}' and t.status = 'clear'
+ORDER BY 
+    t.id DESC`,(err,result)=>{
+    if(err) throw err;
+    else res.render(`${listFolder}/history`,{result})
+  })
+})
+
+
+
+router.get('/dashboard/investment/history',(req,res)=>{
+  pool.query(`SELECT 
+    t.*, 
+    c.name AS customername, 
+    c.number AS customernumber, 
+    c.father_name AS customefather_name, 
+    c.address AS customeraddress,
+    i.name AS investorname -- Add the investor name from the investor table
+FROM 
+    loan t
+JOIN 
+    customer c ON c.id = t.customerid
+LEFT JOIN 
+    investor i ON i.id = t.investorid -- Join the investor table to get the investor name
+WHERE 
+    t.investorid = '${req.query.investorid}' and t.status = 'clear'
+ORDER BY 
+    t.id DESC`,(err,result)=>{
+    if(err) throw err;
+    else res.render(`${listFolder}/history`,{result})
+  })
+})
 
 
 

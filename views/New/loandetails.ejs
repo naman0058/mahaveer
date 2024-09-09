@@ -1,0 +1,456 @@
+<%- include ('.././header.ejs') %>
+<div class="hk-pg-wrapper">
+    <div class="container-xxl">
+         <!-- Page Header -->
+         <div class="hk-pg-header pg-header-wth-tab pt-7">
+            <div class="d-flex">
+
+                <div class="d-flex flex-wrap justify-content-between flex-1">
+                    <div class="mb-lg-0 mb-2 me-8">
+                        <h1 class="pg-title">New Loan</h1>
+                        <p>Create pages using a variety of features that leverage jampack components</p>
+                    </div>
+                    <div class="pg-header-action-wrap">
+                        <div class="input-group w-300p">
+                            <span class="input-affix-wrapper">
+                                <span class="input-prefix"><span class="feather-icon"><i data-feather="calendar"></i></span></span>
+                                <input class="form-control form-wth-icon" name="date" id="date" readonly>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            
+            
+       
+        </div>
+        <!-- /Page Header -->		
+         
+        
+
+        <style>
+            .contact-card .card {
+                height: 100%; /* Ensures card stretches to fill the column height */
+                display: flex;
+                flex-direction: column; /* Allows content to flow from top to bottom */
+            }
+        
+            .contact-card .card-body {
+                flex-grow: 1; /* Makes the body grow to fill available space */
+                display: flex;
+                flex-direction: column;
+                align-items: center; /* Centers content horizontally */
+                justify-content: center; /* Centers content vertically */
+                /* text-align: center; */
+            }
+        
+            .contact-card .avatar {
+                margin-bottom: 10px; /* Adds spacing below the avatar */
+            }
+        
+            .contact-card .user-name, 
+            .contact-card .user-email, 
+            .contact-card .user-contact {
+                overflow: hidden;
+                text-overflow: ellipsis; /* Adds "..." to overflow text */
+                white-space: nowrap; /* Prevents text from wrapping to the next line */
+                width: 100%; /* Ensures full width */
+            }
+        
+            .contact-card .card-footer {
+                display: flex;
+                justify-content: center; /* Centers the footer content horizontally */
+            }
+        
+            .contact-card {
+                min-height: 100px; /* Sets a minimum height for the card to ensure consistency */
+            }
+        </style>
+
+        <div class="contact-body">
+            <div data-simplebar class="nicescroll-bar">
+
+
+                <div class="container">
+                    <!-- Search Input -->
+                    
+                    <!-- Card Grid -->
+                    <div class="row" id="contact-cards">
+                        <!-- Contact Card 1 -->
+
+                        <% for(i=0;i<result.length;i++) { %>
+
+                        <div class="col-xl-12 col-lg-12 col-md-6 mb-4 contact-card">
+                            <div class="card card-border contact-card">
+                                <div class="card-body">
+                                
+                                <a href="/dashboard/loan/details?loanid=<%=result[i].id%>">	<div class="avatar avatar-xl avatar-rounded">
+                                        <img src="<%=result[i].item_image%>" alt="user" class="avatar-img">
+                                    </div>
+                                </a>
+                                    <div class="user-name"></span><b>Customer Name -</b> <%=result[i].customername.toUpperCase()%></div>
+                                    <div class="user-name"></span><b>Father Name -</b> <%=result[i].customefather_name.toUpperCase()%></div>
+
+                                                                                                                                                   
+                                    <div class="user-email"><b>Items - </b><%=result[i].item_name%></div>
+                                    <div class="user-email"><b>Weight - </b><%=result[i].item_weight%></div>
+                                    <%if(result[i].item_description) { %>
+                                    <div class="user-email"><b>Additional - </b><%=result[i].item_description%></div>
+                                     <% } %>
+                                    <div class="user-email"><b>Date - </b> <%=result[i].created_at%></div>
+                                    <div class="user-email"><b>Amount - </b> <%=result[i].amount%></div>
+                                    
+                                    <div class="user-email"><b>Rate of Interest - </b> <%=result[i].rate_of_interest%>%</div>
+                                    <div class="user-email"><b>Time - </b> 
+<% if (result[i].timeDiff.years > 0) { %>
+<%= result[i].timeDiff.years %> Years
+<% } %>
+<% if (result[i].timeDiff.months > 0) { %>
+<%= result[i].timeDiff.months %> Months
+<% } %>
+<% if (result[i].timeDiff.days > 0) { %>
+<%= result[i].timeDiff.days %> Days
+<% } %>
+<% if (result[i].timeDiff.years === 0 && result[i].timeDiff.months === 0 && result[i].timeDiff.days === 0) { %>
+Less than a day
+<% } %>
+</div>
+                                    <div class="user-email"><b>Interest Amount - </b> 
+                                        <%= result[i].interestAmount.toFixed(2) %>
+                                    </div>
+
+                                </div>
+
+
+
+                                <div class="card-footer text-muted position-relative">
+
+                                    <% if(result[i].istransfer == 'yes') { %>
+
+                                        
+
+                                        <a href="#" class="">
+                                            <span class="fs-7 lh-1"><%=result[i].investorname%>  (<%=result[i].transfer_date%>)</span><br/>
+                                        </a> 
+                                     
+                                    
+
+                                    <% } else { %>
+                                        <a href="/loan/transfer?loanid=<%=result[i].id%>" class="d-flex align-items-center">
+                                            <span class="fs-7 lh-1">Transfer</span>
+                                        </a>
+                                        <% } %>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                
+                        <% } %>
+                        <!-- Contact Card 2 -->
+                     
+                
+                        <!-- Additional cards... -->
+                    </div>
+                </div>
+                
+                <!-- Include Feather Icons -->
+                <script>
+                    // feather.replace();
+                
+                    // Search functionality
+                    document.getElementById('search-input').addEventListener('input', function() {
+                        const searchTerm = this.value.toLowerCase();
+                        const cards = document.querySelectorAll('.contact-card');
+                
+                        cards.forEach(card => {
+                            const textContent = card.textContent.toLowerCase();
+                            if (textContent.includes(searchTerm)) {
+                                card.style.display = 'block';
+                            } else {
+                                card.style.display = 'none';
+                            }
+                        });
+                    });
+                </script>
+                
+                
+                
+            </div>
+        </div>
+
+<form class="row g-3 mt-5" id="myForm" method="post" enctype="multipart/form-data">
+	
+
+
+<input type="hidden" id="loanid" value="<%=result[0].id%>">
+  
+	
+	<div class="col-md-12">
+		<label for="inputCity" class="form-label">Upload Image</label>
+		<input class="form-control" type="file" id="customer_image" name="customer_image" placeholder="Item Weight">
+	</div>
+	
+   
+	
+	<div class="col-12">
+		<button type="button" onclick="submitForm()" style="float: right;" class="btn btn-primary">Save</button>
+	</div>
+</form>
+
+
+<%- include ('.././footer.ejs') %>
+
+
+
+     
+
+
+
+<script>
+function submitForm() {
+    const loanid = $('#loanid').val();
+    const customer_image = $('#customer_image').val();
+    const date = $('#date').val();
+    const status = 'clear'  
+
+
+   
+    // customerid validation checks
+   if (customer_image === '') {
+        alert('Upload Customer Image');
+        return;
+    } 
+   
+    else{
+
+    const url = "https://api.cloudinary.com/v1_1/dciqc2rgl/image/upload";
+    const loaderOverlay = document.getElementById("loader-overlay");
+    loaderOverlay.style.display = "flex"; // Show overlay
+
+    const fileInput = document.querySelector("[type=file]");
+    const file = fileInput.files[0];
+
+    // Check if a file is selected
+    if (!file) {
+        alert('No photo selected');
+        loaderOverlay.style.display = "none"; // Hide overlay if no file
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", "docs_upload_example_us_preset");
+
+    // Upload the photo to Cloudinary
+    fetch(url, {
+        method: "POST",
+        body: formData,
+    })
+        .then((response) => response.json())
+        .then((data) => {
+            const photoUrl = data.url; // Get uploaded photo URL
+
+            // Send customer data to the server
+            $.post('/dashboard/clear/loan', {loanid,customer_image:photoUrl,status}, (data) => {
+                if (data.msg === 'success') {
+                    alert('Success')
+                    loaderOverlay.style.display = "none";
+                    window.location.href = '/dashboard/loan/list'           
+                } else {
+                    alert('An Error Occured Please Try again Later');
+                }
+                loaderOverlay.style.display = "none"; // Hide overlay after response
+            });
+        })
+        .catch((error) => {
+            console.error("Error:", error);
+            alert('Photo upload failed');
+            loaderOverlay.style.display = "none"; // Hide overlay if there's an error
+        });
+}
+
+ }
+
+
+
+ 
+ 
+
+
+
+  </script>
+  
+<!-- Include jQuery (required for Select2) -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- Include Select2 CSS -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+
+<!-- Include Select2 JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+
+<style>
+    /* Increase the height of the Select2 container */
+    .select2-container--default .select2-selection--single {
+        height: 38px; /* Adjust this value to your desired height */
+        padding: 8px; /* Adjust padding for better alignment */
+        font-size: 16px; /* Optional: Increase font size */
+    }
+    
+    /* Center the text vertically */
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        line-height: 30px; /* Adjust line height to center text */
+    }
+    
+    /* Adjust the dropdown arrow position */
+    .select2-container--default .select2-selection--single .select2-selection__arrow {
+        height: 50px; /* Match this with the container height */
+        right: 10px; /* Optional: Adjust for better alignment */
+    }
+    </style>
+    
+  <script>
+    // Fetch and populate the dropdown
+    $(document).ready(function () {
+
+
+        $('#customerSelect').select2({
+        placeholder: 'Search Customer...', // Placeholder text
+        allowClear: true, // Allow clearing the selection
+    });
+
+    $.get('/api/customers', function (customers) {
+    customers.forEach(customer => {
+        // Create the text that includes name, father_name, and address
+        const optionText = `${customer.name} S/O (${customer.father_name}) - ${customer.address}`;
+        
+        // Append the new option to the select element
+        $('#customerSelect').append(new Option(optionText, customer.id));
+    });
+});
+    
+        // Handle customer selection
+        $('#customerSelect').change(function () {
+            const loaderOverlay = document.getElementById("loader-overlay");
+            loaderOverlay.style.display = "flex"; // Show overlay
+            const customerId = $(this).val();
+            if (customerId) {
+                $.get(`/api/customers/${customerId}`, function (customer) {
+                    console.log('cus',customer)
+                    $('#name').val(customer[0].name);
+                    $('#father_name').val(customer[0].father_name);
+                    $('#number').val(customer[0].number);
+                    $('#address').val(customer[0].address);
+                    // If the photo URL needs to be previewed, update it accordingly
+                    $('#photo-preview').attr('src', customer[0].photo);
+                });
+            loaderOverlay.style.display = "none"; // Hide overlay if there's an error
+
+            } else {
+                // Clear the form if no customer is selected
+                $('#myForm')[0].reset();
+            loaderOverlay.style.display = "none"; // Hide overlay if there's an error
+
+            }
+        });
+    });
+
+
+
+    function createPrintLayout(data) {
+    // Dynamically create a printable HTML structure
+    const printWindow = window.open('', '', 'height=600,width=800');
+ 
+    
+    // HTML content for printing
+    const content = `
+    <html>
+    <head>
+        <title>Print Customer Information</title>
+        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+        <style>
+            body { font-family: Arial, sans-serif; }
+            .print-container { margin: 20px; }
+            .table th, .table td { text-align: left; vertical-align: middle; }
+            .signature { text-align: right; margin-top: 40px; }
+            .signature p { margin: 0; }
+        </style>
+    </head>
+    <body>
+        <div class="print-container">
+            <h2 class="mb-4">Customer Information</h2>
+            <table class="table table-bordered">
+                <tbody>
+                    <tr>
+                        <th>Date</th>
+                        <td>${data.date}</td>
+                    </tr>
+                    <tr>
+                        <th>Customer Name</th>
+                        <td>${data.customerName}</td>
+                    </tr>
+                    <tr>
+                        <th>Father Name</th>
+                        <td>${data.father_name}</td>
+                    </tr>
+                    <tr>
+                        <th>Number</th>
+                        <td>${data.number}</td>
+                    </tr>
+                    <tr>
+                        <th>Item Name</th>
+                        <td>${data.item_name}</td>
+                    </tr>
+                    <tr>
+                        <th>Item Weight</th>
+                        <td>${data.item_weight}</td>
+                    </tr>
+                    <tr>
+                        <th>Amount</th>
+                        <td>${data.amount}</td>
+                    </tr>
+                    <tr>
+                        <th>Item Description</th>
+                        <td>${data.item_description}</td>
+                    </tr>
+                    <tr>
+                        <th>Rate of Interest</th>
+                        <td>${data.rate_of_interest}</td>
+                    </tr>
+                    <tr>
+                        <th>Address</th>
+                        <td>${data.address}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="signature">
+                <p>_________________________</p>
+                <p>Customer Signature</p>
+            </div>
+        </div>
+    </body>
+    </html>
+`;
+
+    // Write content to the new window and print
+    printWindow.document.write(content);
+    printWindow.document.close();
+    printWindow.print();
+    const checkPrintWindowClosed = setInterval(() => {
+        if (printWindow.closed) {
+            clearInterval(checkPrintWindowClosed);
+            window.location.reload(); // Reload the parent window when print window is closed
+        }
+    }, 1000); // Check every second
+  
+
+}
+
+
+
+
+
+    </script>
+
+													
