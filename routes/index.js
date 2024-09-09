@@ -12,9 +12,42 @@ const allowedTables = ['customer', 'investor', 'loan']; // Define allowed tables
 
 
 /* GET home page. */
-router.get('/', verify.vendorAuthenticationToken,function(req, res, next) {
-  res.render(`${folder}/dashboard`, { title: 'Express' });
+router.get('/', verify.vendorAuthenticationToken, async function (req, res, next) {
+  const vendorId = req.session.vendorid;
+
+  // Combined query to fetch all required information
+  const query = `
+    SELECT 
+      COALESCE(SUM(CASE WHEN status = 'pending' THEN amount END), 0) AS total_pending,
+      COALESCE(SUM(CASE WHEN istransfer = 'yes' AND status = 'pending' THEN amount END), 0) AS total_transferred,
+      COALESCE(SUM(CASE WHEN istransfer IS NULL AND status = 'pending' THEN amount END), 0) AS total_not_transferred,
+      COALESCE(SUM(CASE WHEN created_at < DATE_SUB(CURDATE(), INTERVAL 1 YEAR) AND status = 'pending' THEN amount END), 0) AS total_amount_last_year
+    FROM loan
+    WHERE vendorid = ?;
+
+    SELECT 
+      investor.*, 
+      COALESCE(SUM(loan.amount), 0) AS total_invested
+    FROM investor
+    LEFT JOIN loan ON investor.id = loan.investorid 
+    WHERE loan.vendorid = ? AND loan.status = 'pending'
+    GROUP BY investor.id;
+  `;
+
+  try {
+    // Using promise-based query execution for better error handling and async flow
+    const [loanResults, investorResults] = await queryAsync(query, [vendorId, vendorId]);
+
+    // Send the combined results as JSON
+    // res.json({ loanResults, investorResults });
+    res.render(`${folder}/dashboard`,{loanResults, investorResults})
+  } catch (err) {
+    console.error('Error executing queries:', err);
+    res.status(500).json({ msg: 'Server error' });
+  }
 });
+
+
 
 
 router.get('/dashboard/:pagename',verify.vendorAuthenticationToken,(req,res)=>{
@@ -38,7 +71,7 @@ router.get('/dashboard/:pagename',verify.vendorAuthenticationToken,(req,res)=>{
 //     pool.query(`select t.* , 
 //       (select c.name from customer c where c.id = t.customerid) as customername,
 //       (select c.number from customer c where c.id = t.customerid) as customernumber,
-//       (select c.father_name from customer c where c.id = t.customerid) as customefather_name,
+//       (select c.father_name from customer c where c.id = t.customerid) as customerfather_name,
 //       (select c.address from customer c where c.id = t.customerid) as customeraddress
 
 //       from ${tablename} t where t.vendorid = '${req.session.vendorid}' order by t.id desc`,(err,result)=>{
@@ -97,7 +130,7 @@ router.get('/dashboard/:tablename/list', verify.vendorAuthenticationToken, async
     if (tablename === 'loan') {
       query = `
         SELECT t.*, c.name AS customername, c.number AS customernumber, 
-               c.father_name AS customefather_name, c.address AS customeraddress,i.name AS investorname
+               c.father_name AS customerfather_name, c.address AS customeraddress,i.name AS investorname
         FROM ${tablename} t
         JOIN customer c ON c.id = t.customerid
         LEFT JOIN  investor i ON i.id = t.investorid
@@ -164,7 +197,7 @@ router.get('/dashboard/view/loan', verify.vendorAuthenticationToken, async (req,
     t.*, 
     c.name AS customername, 
     c.number AS customernumber, 
-    c.father_name AS customefather_name, 
+    c.father_name AS customerfather_name, 
     c.address AS customeraddress,
     i.name AS investorname -- Add the investor name from the investor table
 FROM 
@@ -227,7 +260,7 @@ router.get('/dashboard/view/investment', verify.vendorAuthenticationToken, async
     t.*, 
     c.name AS customername, 
     c.number AS customernumber, 
-    c.father_name AS customefather_name, 
+    c.father_name AS customerfather_name, 
     c.address AS customeraddress,
     i.name AS investorname -- Add the investor name from the investor table
 FROM 
@@ -289,7 +322,7 @@ router.get('/dashboard/loan/details', verify.vendorAuthenticationToken, async (r
     t.*, 
     c.name AS customername, 
     c.number AS customernumber, 
-    c.father_name AS customefather_name, 
+    c.father_name AS customerfather_name, 
     c.address AS customeraddress,
     i.name AS investorname -- Add the investor name from the investor table
 FROM 
@@ -332,6 +365,66 @@ LIMIT ? OFFSET ?
     res.status(500).json({ msg: 'Server error' });
   }
 });
+
+
+
+
+router.get('/dashboard/one/year/old/loan', verify.vendorAuthenticationToken, async (req, res) => {
+  const limit = 100; // Number of records per page
+  const page = parseInt(req.query.page) || 1;
+  const offset = (page - 1) * limit;
+
+  try {
+    const query = `
+      SELECT 
+        t.*, 
+        c.name AS customername, 
+        c.number AS customernumber, 
+        c.father_name AS customerfather_name, 
+        c.address AS customeraddress,
+        i.name AS investorname -- Add the investor name from the investor table
+      FROM 
+        loan t
+      JOIN 
+        customer c ON c.id = t.customerid
+      LEFT JOIN 
+        investor i ON i.id = t.investorid -- Join the investor table to get the investor name
+      WHERE 
+        t.vendorid = ? 
+        AND t.status = 'pending'
+        AND t.created_at < DATE_SUB(CURDATE(), INTERVAL 1 YEAR) -- Filter for loans older than 1 year
+      ORDER BY 
+        t.id DESC
+      LIMIT ? OFFSET ?
+    `;
+
+    const values = [req.session.vendorid, limit, offset];
+
+    // Execute the query
+    const [rows] = await pool.promise().query(query, values);
+
+    const currentDate = verify.getCurrentDate();
+    const updatedResults = rows.map(item => {
+      const timeDiff = verify.calculateTimeDifference(item.created_at, currentDate);
+      const days = verify.calculateTimeDifferenceInDays(item.created_at, currentDate);
+      const dailyRate = item.rate_of_interest / 31; // Assuming 30 days in a month
+      const interestAmount = verify.calculateInterest(item.amount, dailyRate, days);
+
+      return {
+        ...item,
+        timeDiff,
+        interestAmount,
+      };
+    });
+
+    res.render(`${listFolder}/loan`, { title: 'Express', result: updatedResults, tablename: 'loan', customerid: req.query.customerid });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ msg: 'Server error' });
+  }
+});
+
 
 
 router.get('/loan/transfer',(req,res)=>{
@@ -497,7 +590,7 @@ router.get('/dashboard/loan/history',(req,res)=>{
     t.*, 
     c.name AS customername, 
     c.number AS customernumber, 
-    c.father_name AS customefather_name, 
+    c.father_name AS customerfather_name, 
     c.address AS customeraddress,
     i.name AS investorname -- Add the investor name from the investor table
 FROM 
@@ -522,7 +615,7 @@ router.get('/dashboard/user/history',(req,res)=>{
     t.*, 
     c.name AS customername, 
     c.number AS customernumber, 
-    c.father_name AS customefather_name, 
+    c.father_name AS customerfather_name, 
     c.address AS customeraddress,
     i.name AS investorname -- Add the investor name from the investor table
 FROM 
@@ -547,7 +640,7 @@ router.get('/dashboard/investment/history',(req,res)=>{
     t.*, 
     c.name AS customername, 
     c.number AS customernumber, 
-    c.father_name AS customefather_name, 
+    c.father_name AS customerfather_name, 
     c.address AS customeraddress,
     i.name AS investorname -- Add the investor name from the investor table
 FROM 
@@ -564,6 +657,10 @@ ORDER BY
     else res.render(`${listFolder}/history`,{result})
   })
 })
+
+
+
+
 
 
 

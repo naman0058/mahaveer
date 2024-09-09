@@ -13,7 +13,7 @@
 								<div class="d-flex align-items-center">
 									<div class="dropdown">
 										<a class="contactapp-title link-dark" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-											<h1>Loan List</h1>
+											<h1>Loan List (गहने की सूची)</h1>
 										</a>
 
 										
@@ -91,70 +91,101 @@
 
                                             <% for(i=0;i<result.length;i++) { %>
 
-                                            <div class="col-xl-3 col-lg-4 col-md-6 mb-4 contact-card">
-                                                <div class="card card-border contact-card">
-													<div class="card-body">
-													
-													<a href="/dashboard/loan/details?loanid=<%=result[i].id%>">	<div class="avatar avatar-xl avatar-rounded">
-															<img src="<%=result[i].item_image%>" alt="user" class="avatar-img">
+												<div class="col-xl-4 col-lg-4 col-md-6 mb-4 contact-card">
+													<div class="card card-border contact-card">
+														<div class="card-body">
+
+															<a href="/dashboard/loan/details?loanid=<%=result[i].id%>">	<div class="avatar avatar-xl avatar-rounded">
+																<img src="<%=result[i].item_image%>" alt="user" class="avatar-img">
+															</div>
+														</a>
+
+															<table class="table table-bordered table-responsive" >
+																<!-- Personal Details -->
+																<tr>
+																	<td style="font-size: 12px;color: black;"><b>Customer Name (ग्राहक का नाम)</b></td>
+																	<td style="color: black;"><%=result[i].customername.toUpperCase()%></td>
+																</tr>
+																<tr>
+																	<td><b>Father Name (पिता का नाम)</b></td>
+																	<td><%=result[i].customerfather_name.toUpperCase()%></td>
+																</tr>
+												
+																<!-- Separator (Dotted Line) -->
+																<tr>
+																	<td colspan="2">
+																		<hr style="border: 1px dotted #d4af37;">
+																	</td>
+																</tr>
+												
+																<!-- Loan and Item Details -->
+																<tr>
+																	<td><b>Items</b></td>
+																	<td><%=result[i].item_name%></td>
+																</tr>
+																<tr>
+																	<td><b>Weight</b></td>
+																	<td><%=result[i].item_weight%> gm</td>
+																</tr>
+																<% if(result[i].item_description) { %>
+																<tr>
+																	<td><b>Additional</b></td>
+																	<td><%=result[i].item_description%></td>
+																</tr>
+																<% } %>
+																<tr>
+																	<td><b>Date</b></td>
+																	<td><%=result[i].created_at%></td>
+																</tr>
+																<tr>
+																	<td><b>Amount</b></td>
+																	<td><%=result[i].amount%></td>
+																</tr>
+												
+																<!-- Loan Terms -->
+																<tr>
+																	<td><b>Rate of Interest</b></td>
+																	<td><%=result[i].rate_of_interest%>%</td>
+																</tr>
+																<tr>
+																	<td><b>Time</b></td>
+																	<td>
+																		<% if (result[i].timeDiff.years > 0) { %>
+																			<%= result[i].timeDiff.years %> Years
+																		<% } %>
+																		<% if (result[i].timeDiff.months > 0) { %>
+																			<%= result[i].timeDiff.months %> Months
+																		<% } %>
+																		<% if (result[i].timeDiff.days > 0) { %>
+																			<%= result[i].timeDiff.days %> Days
+																		<% } %>
+																		<% if (result[i].timeDiff.years === 0 && result[i].timeDiff.months === 0 && result[i].timeDiff.days === 0) { %>
+																			Less than a day
+																		<% } %>
+																	</td>
+																</tr>
+																<tr>
+																	<td><b>Interest Amount</b></td>
+																	<td><%= result[i].interestAmount.toFixed(2) %></td>
+																</tr>
+															</table>
 														</div>
-													</a>
-														<div class="user-name"></span><b>Customer Name -</b> <%=result[i].customername.toUpperCase()%></div>
-														<div class="user-name"></span><b>Father Name -</b> <%=result[i].customefather_name.toUpperCase()%></div>
-
-                                                                                                               														
-														<div class="user-email"><b>Items - </b><%=result[i].item_name%></div>
-														<div class="user-email"><b>Weight - </b><%=result[i].item_weight%></div>
-                                                        <%if(result[i].item_description) { %>
-														<div class="user-email"><b>Additional - </b><%=result[i].item_description%></div>
-                                                         <% } %>
-														<div class="user-email"><b>Date - </b> <%=result[i].created_at%></div>
-														<div class="user-email"><b>Amount - </b> <%=result[i].amount%></div>
-														
-                                                        <div class="user-email"><b>Rate of Interest - </b> <%=result[i].rate_of_interest%>%</div>
-                                                        <div class="user-email"><b>Time - </b> 
-    <% if (result[i].timeDiff.years > 0) { %>
-        <%= result[i].timeDiff.years %> Years
-    <% } %>
-    <% if (result[i].timeDiff.months > 0) { %>
-        <%= result[i].timeDiff.months %> Months
-    <% } %>
-    <% if (result[i].timeDiff.days > 0) { %>
-        <%= result[i].timeDiff.days %> Days
-    <% } %>
-    <% if (result[i].timeDiff.years === 0 && result[i].timeDiff.months === 0 && result[i].timeDiff.days === 0) { %>
-        Less than a day
-    <% } %>
-</div>
-                                                        <div class="user-email"><b>Interest Amount - </b> 
-                                                            <%= result[i].interestAmount.toFixed(2) %>
-                                                        </div>
-
-													</div>
-
-
-
-													<div class="card-footer text-muted position-relative">
-
-                                                        <% if(result[i].istransfer == 'yes') { %>
-
-                                                            
-
-                                                            <a href="#" class="">
-                                                                <span class="fs-7 lh-1"><%=result[i].investorname%>  (<%=result[i].transfer_date%>)</span><br/>
-                                                            </a> 
-                                                         
-														
-
-                                                        <% } else { %>
-                                                            <a href="/loan/transfer?loanid=<%=result[i].id%>" class="d-flex align-items-center">
-                                                                <span class="fs-7 lh-1">Transfer</span>
-                                                            </a>
-                                                            <% } %>
-														
+												
+														<!-- Footer -->
+														<div class="card-footer text-muted position-relative">
+															<% if(result[i].istransfer == 'yes') { %>
+															<a href="#" class="">
+																<span class="fs-7 lh-1"><%=result[i].investorname%>  (<%=result[i].transfer_date%>)</span><br/>
+															</a>
+															<% } else { %>
+															<a href="/loan/transfer?loanid=<%=result[i].id%>" class="d-flex align-items-center">
+																<span class="fs-7 lh-1">Transfer</span>
+															</a>
+															<% } %>
+														</div>
 													</div>
 												</div>
-                                            </div>
+												
                                     
                                             <% } %>
                                             <!-- Contact Card 2 -->

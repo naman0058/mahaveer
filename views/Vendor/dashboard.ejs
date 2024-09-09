@@ -19,13 +19,13 @@
                         <div class="d-flex flex-wrap justify-content-between flex-1">
                             <div class="mb-lg-0 mb-2 me-8">
                                 <h1 class="pg-title">Welcome back</h1>
-                                <p>Create pages using a variety of features that leverage jampack components</p>
+                                <p>TrakMoney Fund Management Dashboard</p>
                             </div>
                             <div class="pg-header-action-wrap">
                                 <div class="input-group w-300p">
                                     <span class="input-affix-wrapper">
                                         <span class="input-prefix"><span class="feather-icon"><i data-feather="calendar"></i></span></span>
-                                        <input class="form-control form-wth-icon" name="datetimes" value="Aug 18,2020 - Aug 19, 2020">
+                                        <input class="form-control form-wth-icon" name="date" id="date" readonly>
                                     </span>
                                 </div>
                             </div>
@@ -43,43 +43,95 @@
                     <div class="row">
                         <div class="col-sm-3">
                             <div class="card card-wth-line">
-                                <div class="card-line bg-primary"></div>
-                                <div class="card-body">
-                                    <h5 class="card-title">Special title treatment</h5>
-                                    <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                                <div class="card-line bg-success"></div>
+                                <div class="card-body" style="display: flex; align-items: center;">
+                                    <img src="https://img.icons8.com/?size=40&id=Bw1qS7FPUzIJ&format=png&color=00D67F" style="margin-right: 8px;">
+                                    <h5 class="card-title" style="margin: 0;font-weight: bold;">Active Funds (रखे हुए गहने)</h5>
                                 </div>
-                                <div class="card-footer text-muted">
-                                    Card Footer
+                                <div class="card-footer" style="color: black;font-size: 18px;">
+                                    <%= new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(loanResults[0].total_pending) %>
+
                                 </div>
                             </div>
                         </div>
                         <div class="col-sm-3">
                             <div class="card card-wth-line">
-                                <div class="card-line bg-success"></div>
-                                <div class="card-body">
-                                    <h5 class="card-title">Special title treatment</h5>
-                                    <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                                <div class="card-line bg-primary"></div>
+                                <div class="card-body" style="display: flex; align-items: center;">
+                                    <img src="https://img.icons8.com/?size=40&id=FJ5UK7RNoMoB&format=png&color=007D88" style="margin-right: 8px;">
+                                    <h5 class="card-title" style="margin: 0;font-weight: bold;">Transferred Funds (ट्रांसफर किए गए गहने)</h5>
                                 </div>
-                                <div class="card-footer text-muted">
-                                    Card Footer
+                                <div class="card-footer" style="color: black;font-size: 18px;">
+                                    <%= new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(loanResults[0].total_transferred) %>
+
+
                                 </div>
                             </div>
                         </div>
                         <div class="col-sm-3">
                             <div class="card card-wth-line">
                                 <div class="card-line bg-warning"></div>
-                                <div class="card-body">
-                                    <h5 class="card-title">Special title treatment</h5>
-                                    <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                                <div class="card-body" style="display: flex; align-items: center;">
+                                    <img src="https://img.icons8.com/?size=40&id=112571&format=png&color=FFC400" style="margin-right: 8px;">
+                                    <h5 class="card-title" style="margin: 0;font-weight: bold;">Own Funds (मेरे पास के गहने)</h5>
                                 </div>
-                                <div class="card-footer text-muted">
-                                    Card Footer
+                                <div class="card-footer" style="color: black;font-size: 18px;">
+                                    <%= new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(loanResults[0].total_not_transferred) %>
+
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="card card-wth-line">
+                                <div class="card-line bg-danger"></div>
+                                <div class="card-body" style="display: flex; align-items: center;">
+                                    <img src="https://img.icons8.com/?size=40&id=113106&format=png&color=FF0000" style="margin-right: 8px;">
+                                    <h5 class="card-title" style="margin: 0;font-weight: bold;">1 year old Funds (एक साल पुराने गहने)</h5>
+                                </div>
+                                <div class="card-footer" style="color: black;font-size: 18px;">
+                                    <%= new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(loanResults[0].total_amount_last_year) %>
+                                   
+
                                 </div>
                             </div>
                         </div>
                         </div>
                                                                             
 
+                        <div class="hk-pg-header pg-header-wth-tab pt-7">
+                            <div class="d-flex">
+                                <div class="d-flex flex-wrap justify-content-between flex-1">
+                                    <div class="mb-lg-0 mb-2 me-8">
+                                        <h1 class="pg-title">Investor</h1>
+                                    </div>
+                                   
+                                </div>
+                            </div>
+                      
+                        </div>
+
+
+                        <div class="row" style="margin-top: 20px;">
+
+                          <% for(i=0;i<investorResults.length;i++){ %>
+
+                            <div class="col-sm-3">
+                                <div class="card card-wth-line">
+                                    <div class="card-line bg-primary"></div>
+                                    <div class="card-body">
+                                        <h5 class="card-title"><%=investorResults[i].name%></h5>
+                                    </div>
+                                    <div class="card-footer" style="color: black;font-size: 18px;">
+                                    <%= new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(investorResults[i].total_invested) %>
+                                       
+                                    </div>
+                                </div>
+                            </div>
+                          
+                            </div>
+
+                            <% } %>
              
                 </div>
                 <!-- /Page Body -->		

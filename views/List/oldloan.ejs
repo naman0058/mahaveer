@@ -23,7 +23,14 @@
 									
 								</div>
 
+								<div class="dropdown">
+									<a  class="contactapp-title"  href="/dashboard/loan/history" role="button" aria-haspopup="true" aria-expanded="false">
+										<h1>View History</h1>
+									</a>
 
+									
+								
+								</div>
 							
 							
 							</header>
@@ -102,12 +109,26 @@
 														<div class="user-email"><b>Additional - </b><%=result[i].item_description%></div>
                                                          <% } %>
 														<div class="user-email"><b>Date - </b> <%=result[i].created_at%></div>
-														<div class="user-email"><b>Last Update - </b> <%=result[i].updated_at%></div>
 														<div class="user-email"><b>Amount - </b> <%=result[i].amount%></div>
 														
                                                         <div class="user-email"><b>Rate of Interest - </b> <%=result[i].rate_of_interest%>%</div>
-                                                    
-                                                       
+                                                        <div class="user-email"><b>Time - </b> 
+    <% if (result[i].timeDiff.years > 0) { %>
+        <%= result[i].timeDiff.years %> Years
+    <% } %>
+    <% if (result[i].timeDiff.months > 0) { %>
+        <%= result[i].timeDiff.months %> Months
+    <% } %>
+    <% if (result[i].timeDiff.days > 0) { %>
+        <%= result[i].timeDiff.days %> Days
+    <% } %>
+    <% if (result[i].timeDiff.years === 0 && result[i].timeDiff.months === 0 && result[i].timeDiff.days === 0) { %>
+        Less than a day
+    <% } %>
+</div>
+                                                        <div class="user-email"><b>Interest Amount - </b> 
+                                                            <%= result[i].interestAmount.toFixed(2) %>
+                                                        </div>
 
 													</div>
 

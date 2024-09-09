@@ -7,8 +7,8 @@
 
                 <div class="d-flex flex-wrap justify-content-between flex-1">
                     <div class="mb-lg-0 mb-2 me-8">
-                        <h1 class="pg-title">New Loan</h1>
-                        <p>Create pages using a variety of features that leverage jampack components</p>
+                        <h1 class="pg-title">New Loan (नए गहने)</h1>
+                        <p style="margin-top: 20px;"></p>
                     </div>
                     <div class="pg-header-action-wrap">
                         <div class="input-group w-300p">
@@ -26,82 +26,76 @@
        
         </div>
         <!-- /Page Header -->									
-<form class="row g-3 mt-5" id="myForm" method="post" enctype="multipart/form-data">
-	<div class="col-md-6">
-        <label for="customerSelect" class="form-label">Select Customer</label>
-        <select id="customerSelect" class="form-control select2">
-            <option value="">Search Customer...</option>
-        </select>
-    </div>
-	<div class="col-md-6">
-		<label for="inputPassword4" class="form-label">Father Name</label>
-		<input type="text" name="father_name" id="father_name" class="form-control" placeholder="Father Name" readonly>
-	</div>
-	<div class="col-md-6">
-		<label for="inputAddress" class="form-label">Mobile Number</label>
-		<input type="text" name="number" id="number" class="form-control"  placeholder="Mobile Number" readonly>
-	</div>
-	
-	<div class="col-md-6">
-		<label for="inputCity" class="form-label">Address</label>
-		<input class="form-control" id="address" name="address" placeholder="Customer Address" readonly>
-	</div>
-
-
-
-    <div class="col-md-6">
-		<label for="inputAddress" class="form-label">Item Name</label>
-		<input type="text" name="item_name" id="item_name" class="form-control"  placeholder="Item Name">
-	</div>
-	
-	<div class="col-md-6">
-		<label for="inputCity" class="form-label">Item Weight</label>
-		<input class="form-control" id="item_weight" name="item_weight" placeholder="Item Weight">
-	</div>
-
-
-    <div class="col-md-6">
-		<label for="inputAddress" class="form-label">Rate of Interest</label>
-		<!-- <input type="text" name="rate_of_interest" id="rate_of_interest" class="form-control"  placeholder="Rate of Interest"> -->
-         <select class="form-control" name="rate_of_interest" id="rate_of_interest">
-            <option value="1">1%</option>
-            <option value="1.10">1.10%</option>
-            <option value="1.20">1.20%</option>
-            <option value="1.25">1.25%</option>
-            <option value="1.30">1.30%</option>
-            <option value="1.40">1.40%</option>
-            <option value="1.50">1.50%</option>
-            <option value="1.60">1.60%</option>
-            <option value="1.70">1.70%</option>
-            <option value="1.75">1.75%</option>
-            <option value="1.80">1.80%</option>
-            <option value="1.90">1.90%</option>
-            <option value="2" selected>2%</option>
-
-         </select>
-	</div>
-
-
-    <div class="col-md-6">
-		<label for="inputCity" class="form-label">Amount</label>
-		<input class="form-control" type="text" id="amount" name="amount" placeholder="Amount">
-	</div>
-	
-	<div class="col-md-6">
-		<label for="inputCity" class="form-label">Item Image</label>
-		<input class="form-control" type="file" id="item_image" name="item_image" placeholder="Item Weight">
-	</div>
-	
-    <div class="col-md-6">
-		<label for="inputCity" class="form-label">Item Description (Optional)</label>
-		<input class="form-control" id="item_description" name="item_description" placeholder="Item Weight">
-	</div>
-	
-	<div class="col-12">
-		<button type="button" onclick="submitForm()" style="float: right;" class="btn btn-primary">Save</button>
-	</div>
-</form>
-
+        <form class="row g-3 mt-5" id="myForm" method="post" enctype="multipart/form-data">
+            <div class="col-md-6">
+                <label for="customerSelect" class="form-label">Select Customer (ग्राहक चुनें)</label>
+                <select id="customerSelect" class="form-control select2">
+                    <option value="">Search Customer (ग्राहक खोजें)...</option>
+                </select>
+            </div>
+            <div class="col-md-6">
+                <label for="inputPassword4" class="form-label">Father Name (पिता का नाम)</label>
+                <input type="text" name="father_name" id="father_name" class="form-control" placeholder="Father Name (पिता का नाम)" readonly>
+            </div>
+            <div class="col-md-6">
+                <label for="inputAddress" class="form-label">Mobile Number (मोबाइल नंबर)</label>
+                <input type="text" name="number" id="number" class="form-control" placeholder="Mobile Number (मोबाइल नंबर)" readonly>
+            </div>
+            
+            <div class="col-md-6">
+                <label for="inputCity" class="form-label">Address (पता)</label>
+                <input class="form-control" id="address" name="address" placeholder="Customer Address (ग्राहक का पता)" readonly>
+            </div>
+        
+            <div class="col-md-6">
+                <label for="inputAddress" class="form-label">Item Name (आइटम का नाम)</label>
+                <input type="text" name="item_name" id="item_name" class="form-control" placeholder="Item Name (आइटम का नाम)">
+            </div>
+            
+            <div class="col-md-6">
+                <label for="inputCity" class="form-label">Item Weight (आइटम का वजन)</label>
+                <input class="form-control" id="item_weight" name="item_weight" placeholder="Item Weight (आइटम का वजन)">
+            </div>
+        
+            <div class="col-md-6">
+                <label for="inputAddress" class="form-label">Interest Rate (ब्याज दर)</label>
+                <select class="form-control" name="rate_of_interest" id="rate_of_interest">
+                    <option value="1">1%</option>
+                    <option value="1.10">1.10%</option>
+                    <option value="1.20">1.20%</option>
+                    <option value="1.25">1.25%</option>
+                    <option value="1.30">1.30%</option>
+                    <option value="1.40">1.40%</option>
+                    <option value="1.50">1.50%</option>
+                    <option value="1.60">1.60%</option>
+                    <option value="1.70">1.70%</option>
+                    <option value="1.75">1.75%</option>
+                    <option value="1.80">1.80%</option>
+                    <option value="1.90">1.90%</option>
+                    <option value="2" selected>2%</option>
+                </select>
+            </div>
+        
+            <div class="col-md-6">
+                <label for="inputCity" class="form-label">Amount (राशि)</label>
+                <input class="form-control" type="text" id="amount" name="amount" placeholder="Amount (राशि)">
+            </div>
+            
+            <div class="col-md-6">
+                <label for="inputCity" class="form-label">Item Image (आइटम की छवि)</label>
+                <input class="form-control" type="file" id="item_image" name="item_image">
+            </div>
+            
+            <div class="col-md-6">
+                <label for="inputCity" class="form-label">Item Description (Optional) (आइटम विवरण)</label>
+                <input class="form-control" id="item_description" name="item_description" placeholder="Item Description (आइटम विवरण)">
+            </div>
+            
+            <div class="col-12">
+                <button type="button" onclick="submitForm()" style="float: right;" class="btn btn-primary">Submit Request (गहने फॉर्म जमा करें)</button>
+            </div>
+        </form>
+        
 
 <%- include ('.././footer.ejs') %>
 
@@ -257,7 +251,7 @@ function submitForm() {
 
 
         $('#customerSelect').select2({
-        placeholder: 'Search Customer...', // Placeholder text
+        placeholder: 'Select Customer (ग्राहक चुनें)', // Placeholder text
         allowClear: true, // Allow clearing the selection
     });
 
