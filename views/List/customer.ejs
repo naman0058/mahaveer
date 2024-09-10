@@ -13,7 +13,7 @@
 								<div class="d-flex align-items-center">
 									<div class="dropdown">
 										<a class="contactapp-title link-dark" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-											<h1>Customer List</h1>
+											<h1 style="color: #1B5E20;">Customer List (ग्राहक की सूची)</h1>
 										</a>
 									
 									</div>
@@ -75,7 +75,9 @@
                                         <!-- Card Grid -->
                                         <div class="row" id="contact-cards">
                                             <!-- Contact Card 1 -->
-
+											<% if(result.length == 0){ %>
+                                                <p class="text-black" style="text-align: center;font-weight: bold;">No Data Found</p>
+                                                                                        <% } %>
                                             <% for(i=0;i<result.length;i++) { %>
 
                                             <div class="col-xl-3 col-lg-4 col-md-6 mb-4 contact-card">
@@ -85,21 +87,30 @@
 														<div class="avatar avatar-xl avatar-rounded">
 															<img src="<%=result[i].photo%>" alt="user" class="avatar-img">
 														</div>
-														<div class="user-name"></span><%=result[i].name.toUpperCase()%> S/O (<%=result[i].father_name.toUpperCase()%>)</div>
-														<div class="user-name"></span></div>
+														<div class="user-name text-black"></span><%=result[i].name.toUpperCase()%> S/O (<%=result[i].father_name.toUpperCase()%>)</div>
+														<div class="user-name text-black"></span></div>
 
-														<div class="user-email">
+														<div class="user-email text-black">
 															<%= result[i].number %> 
 															<% if (result[i].alternate_number) { %> / <%= result[i].alternate_number %> <% } %>
 														  </div>
-														<div class="user-contact"><%=result[i].address%></div>
+														<div class="user-contact text-black"><%=result[i].address%></div>
 													</div>
-													<div class="card-footer text-muted position-relative">
-														<a href="/dashboard/view/loan?customerid=<%=result[i].id%>" class="d-flex align-items-center">
+													<div class="card-footer text-muted position-relative d-flex justify-content-between align-items-center">
+														<!-- Left-aligned Text -->
+														<a href="/dashboard/view/loan?customerid=<%=result[i].id%>" style="text-align: left;" class="d-flex align-items-left">
 															<span class="fs-7 lh-1">View Loan</span>
 														</a>
-														
+													
+														<!-- Vertical Line (Separator) -->
+														<div style="border-left: 1px solid #000; height: 20px; margin: 0 10px;"></div>
+													
+														<!-- Right-aligned Text -->
+														<a href="/dashboard/loan/history?customerid=<%=result[i].id%>" style="text-align: right;" class="d-flex align-items-right">
+															<span class="fs-7 lh-1">View History</span>
+														</a>
 													</div>
+													
 												</div>
                                             </div>
                                     

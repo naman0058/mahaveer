@@ -232,7 +232,7 @@ LIMIT ? OFFSET ?
         };
       });
       
-      res.render(`${listFolder}/userloan`, { title: 'Express', result: updatedResults, tablename:'loan',customerid:req.query.customerid });
+      res.render(`${listFolder}/loan`, { title: 'Express', result: updatedResults, tablename:'loan',customerid:req.query.customerid });
     
     
   } catch (err) {
@@ -417,7 +417,7 @@ router.get('/dashboard/one/year/old/loan', verify.vendorAuthenticationToken, asy
       };
     });
 
-    res.render(`${listFolder}/loan`, { title: 'Express', result: updatedResults, tablename: 'loan', customerid: req.query.customerid });
+    res.render(`${listFolder}/oneyearoldloan`, { title: 'Express', result: updatedResults, tablename: 'loan', customerid: req.query.customerid });
 
   } catch (err) {
     console.error(err);
@@ -604,7 +604,7 @@ WHERE
 ORDER BY 
     t.id DESC`,(err,result)=>{
     if(err) throw err;
-    else res.render(`${listFolder}/history`,{result})
+    else res.render(`${listFolder}/history`,{result,type:'all'})
   })
 })
 
@@ -629,7 +629,7 @@ WHERE
 ORDER BY 
     t.id DESC`,(err,result)=>{
     if(err) throw err;
-    else res.render(`${listFolder}/history`,{result})
+    else res.render(`${listFolder}/history`,{result,type:'user'})
   })
 })
 
@@ -654,12 +654,17 @@ WHERE
 ORDER BY 
     t.id DESC`,(err,result)=>{
     if(err) throw err;
-    else res.render(`${listFolder}/history`,{result})
+    else res.render(`${listFolder}/history`,{result,type:'investor'})
   })
 })
 
 
 
+
+router.get('/sign-out', (req, res) => {
+  req.session.vendorid = null;
+      res.redirect('/');
+  });
 
 
 

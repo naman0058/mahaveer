@@ -7,7 +7,7 @@
 
                 <div class="d-flex flex-wrap justify-content-between flex-1">
                     <div class="mb-lg-0 mb-2 me-8">
-                        <h1 class="pg-title">New Loan</h1>
+                        <h1 class="pg-title" style="color: #1B5E20;">New Loan</h1>
                         <p>Create pages using a variety of features that leverage jampack components</p>
                     </div>
                     <div class="pg-header-action-wrap">
@@ -101,7 +101,7 @@
                                     <div class="user-email"><b>Date - </b> <%=result[i].created_at%></div>
                                     <div class="user-email"><b>Amount - </b> <%=result[i].amount%></div>
                                     
-                                    <div class="user-email"><b>Rate of Interest - </b> <%=result[i].rate_of_interest%>%</div>
+                                    <div class="user-email"><b>Interest Rate - </b> <%=result[i].rate_of_interest%>%</div>
                                     <div class="user-email"><b>Time - </b> 
 <% if (result[i].timeDiff.years > 0) { %>
 <%= result[i].timeDiff.years %> Years
@@ -415,7 +415,7 @@ function submitForm() {
                         <td>${data.item_description}</td>
                     </tr>
                     <tr>
-                        <th>Rate of Interest</th>
+                        <th>Interest Rate</th>
                         <td>${data.rate_of_interest}</td>
                     </tr>
                     <tr>

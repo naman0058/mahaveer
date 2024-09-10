@@ -7,7 +7,7 @@
 
                 <div class="d-flex flex-wrap justify-content-between flex-1">
                     <div class="mb-lg-0 mb-2 me-8">
-                        <h1 class="pg-title">New Loan (नए गहने)</h1>
+                        <h1 class="pg-title" style="color: #1B5E20;">New Loan (नए गहने)</h1>
                         <p style="margin-top: 20px;"></p>
                     </div>
                     <div class="pg-header-action-wrap">
@@ -81,11 +81,11 @@
                 <input class="form-control" type="text" id="amount" name="amount" placeholder="Amount (राशि)">
             </div>
             
-            <div class="col-md-6">
+            <!-- <div class="col-md-6">
                 <label for="inputCity" class="form-label">Item Image (आइटम की छवि)</label>
                 <input class="form-control" type="file" id="item_image" name="item_image">
             </div>
-            
+             -->
             <div class="col-md-6">
                 <label for="inputCity" class="form-label">Item Description (Optional) (आइटम विवरण)</label>
                 <input class="form-control" id="item_description" name="item_description" placeholder="Item Description (आइटम विवरण)">
@@ -141,39 +141,39 @@ function submitForm() {
         alert('Enter Amount');
         return;
     }
-     else if (item_image === '') {
-        alert('Enter Item Image');
-        return;
-    } 
+    //  else if (item_image === '') {
+    //     alert('Enter Item Image');
+    //     return;
+    // } 
    
     else{
 
-    const url = "https://api.cloudinary.com/v1_1/dciqc2rgl/image/upload";
-    const loaderOverlay = document.getElementById("loader-overlay");
-    loaderOverlay.style.display = "flex"; // Show overlay
+    // const url = "https://api.cloudinary.com/v1_1/dciqc2rgl/image/upload";
+    // const loaderOverlay = document.getElementById("loader-overlay");
+    // loaderOverlay.style.display = "flex"; // Show overlay
 
-    const fileInput = document.querySelector("[type=file]");
-    const file = fileInput.files[0];
+    // const fileInput = document.querySelector("[type=file]");
+    // const file = fileInput.files[0];
 
-    // Check if a file is selected
-    if (!file) {
-        alert('No photo selected');
-        loaderOverlay.style.display = "none"; // Hide overlay if no file
-        return;
-    }
+    // // Check if a file is selected
+    // if (!file) {
+    //     alert('No photo selected');
+    //     loaderOverlay.style.display = "none"; // Hide overlay if no file
+    //     return;
+    // }
 
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("upload_preset", "docs_upload_example_us_preset");
+    // const formData = new FormData();
+    // formData.append("file", file);
+    // formData.append("upload_preset", "docs_upload_example_us_preset");
 
-    // Upload the photo to Cloudinary
-    fetch(url, {
-        method: "POST",
-        body: formData,
-    })
-        .then((response) => response.json())
-        .then((data) => {
-            const photoUrl = data.url; // Get uploaded photo URL
+    // // Upload the photo to Cloudinary
+    // fetch(url, {
+    //     method: "POST",
+    //     body: formData,
+    // })
+    //     .then((response) => response.json())
+    //     .then((data) => {
+    //         const photoUrl = data.url; // Get uploaded photo URL
 
             // Send customer data to the server
             $.post('/dashboard/data/loan/insert', {customerid,item_name,item_weight,item_description,rate_of_interest,item_image:photoUrl,amount}, (data) => {
@@ -197,12 +197,12 @@ function submitForm() {
                 }
                 loaderOverlay.style.display = "none"; // Hide overlay after response
             });
-        })
-        .catch((error) => {
-            console.error("Error:", error);
-            alert('Photo upload failed');
-            loaderOverlay.style.display = "none"; // Hide overlay if there's an error
-        });
+        // })
+        // .catch((error) => {
+        //     console.error("Error:", error);
+        //     alert('Photo upload failed');
+        //     loaderOverlay.style.display = "none"; // Hide overlay if there's an error
+        // });
 }
 
  }
@@ -350,7 +350,7 @@ function submitForm() {
                         <td>${data.item_description}</td>
                     </tr>
                     <tr>
-                        <th>Rate of Interest</th>
+                        <th>Interest Rate</th>
                         <td>${data.rate_of_interest}</td>
                     </tr>
                     <tr>

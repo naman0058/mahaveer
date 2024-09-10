@@ -13,7 +13,7 @@
 								<div class="d-flex align-items-center">
 									<div class="dropdown">
 										<a class="contactapp-title link-dark" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-											<h1>Investor List</h1>
+											<h1 style="color: #1B5E20;">Investor List (व्यापारी की सूची)</h1>
 										</a>
 									
 									</div>
@@ -75,6 +75,9 @@
                                         <!-- Card Grid -->
                                         <div class="row" id="contact-cards">
                                             <!-- Contact Card 1 -->
+											<% if(result.length == 0){ %>
+                                                <p class="text-black" style="text-align: center;font-weight: bold;">No Data Found</p>
+                                                                                        <% } %>
 
                                             <% for(i=0;i<result.length;i++) { %>
 
@@ -83,16 +86,33 @@
 													<div class="card-body text-center">
 													
 													
-														<div class="user-name"></span><%=result[i].name.toUpperCase()%></div>
+														<div class="user-name text-black"></span><%=result[i].name.toUpperCase()%></div>
 														
-														<div class="user-email"><%=result[i].number%></div>
+														<div class="user-email text-black"><%=result[i].number%></div>
 													</div>
-													<div class="card-footer text-muted position-relative">
+													<!-- <div class="card-footer text-muted position-relative">
 														<a href="/dashboard/view/investment?investorid=<%=result[i].id%>" class="d-flex align-items-center">
 															<span class="fs-7 lh-1">View Investment</span>
 														</a>
 														
+													</div> -->
+													<div class="card-footer text-muted position-relative d-flex justify-content-between align-items-center">
+														<!-- Left-aligned Text -->
+														<a href="/dashboard/view/investment?investorid=<%=result[i].id%>" style="text-align: left;" class="d-flex align-items-left">
+															<span class="fs-7 lh-1">View Investment</span>
+														</a>
+													
+														<!-- Vertical Line (Separator) -->
+														<div style="border-left: 1px solid #000; height: 20px; margin: 0 10px;"></div>
+													
+														<!-- Right-aligned Text -->
+														<a href="/dashboard/investment/history?investorid=<%=result[i].id%>" style="text-align: right;" class="d-flex align-items-right">
+															<span class="fs-7 lh-1">View History</span>
+														</a>
 													</div>
+
+
+
 												</div>
                                             </div>
                                     

@@ -12,12 +12,12 @@ Contact: contact@hencework.com
 	<meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jampack - Admin CRM Dashboard Template</title>
+    <title>TrakMoney - Vendor Dashboard</title>
     <meta name="description" content="A modern CRM Dashboard Template with reusable and flexible components for your SaaS web applications by hencework. Based on Bootstrap."/>
     
 	<!-- Favicon -->
-    <link rel="shortcut icon" href="favicon.ico">
-    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="/images/favicon.png">
+    <link rel="icon" href="/images/favicon.png" type="image/x-icon">
 	
 	<!-- Daterangepicker CSS -->
     <link href="/vendors/daterangepicker/daterangepicker.css" rel="stylesheet" type="text/css" />
@@ -38,7 +38,7 @@ Contact: contact@hencework.com
 			<!-- Start Nav -->
 			<div class="nav-start-wrap">
 				<!-- Brand -->
-				<a class="navbar-brand d-xl-flex d-none" href="index.html">
+				<a class="navbar-brand d-xl-flex d-none" href="/">
 					
 					<img class="brand-img img-fluid" src="/images/logo.png" alt="brand" style="width: 200px;"/>
 				</a>
@@ -46,129 +46,7 @@ Contact: contact@hencework.com
 				<button class="btn btn-icon btn-rounded btn-flush-dark flush-soft-hover navbar-toggle d-xl-none"><span class="icon"><span class="feather-icon"><i data-feather="align-left"></i></span></span></button>
 					
 				<!-- Search -->
-				<form class="dropdown navbar-search">
-					<div class="dropdown-toggle no-caret" data-bs-toggle="dropdown" data-dropdown-animation data-bs-auto-close="outside">
-						<a href="#" class="btn btn-icon btn-rounded btn-flush-dark flush-soft-hover  d-xl-none"><span class="icon"><span class="feather-icon"><i data-feather="search"></i></span></span></a>
-						<div class="input-group d-xl-flex d-none">
-							<span class="input-affix-wrapper input-search affix-border">
-								<input type="text" class="form-control  bg-transparent"  data-navbar-search-close="false" placeholder="Search..." aria-label="Search">
-								<span class="input-suffix"><span>/</span>
-									<span class="btn-input-clear"><i class="bi bi-x-circle-fill"></i></span>
-									<span class="spinner-border spinner-border-sm input-loader text-primary" role="status">
-										<span class="sr-only">Loading...</span>
-									</span>
-								</span>
-							</span>
-						</div>
-					</div>
-					<div  class="dropdown-menu p-0">
-						<!-- Mobile Search -->
-						<div class="dropdown-item d-xl-none bg-transparent">
-							<div class="input-group mobile-search">
-								<span class="input-affix-wrapper input-search">
-									<input type="text" class="form-control" placeholder="Search..." aria-label="Search">
-									<span class="input-suffix">
-										<span class="btn-input-clear"><i class="bi bi-x-circle-fill"></i></span>
-										<span class="spinner-border spinner-border-sm input-loader text-primary" role="status">
-											<span class="sr-only">Loading...</span>
-										</span>
-									</span>
-								</span>
-							</div>
-						</div>
-						<!--/ Mobile Search -->
-						<div data-simplebar class="dropdown-body p-2">
-							<h6 class="dropdown-header">Recent Search
-							</h6>
-							<div class="dropdown-item bg-transparent">
-								<a href="#" class="badge badge-pill badge-soft-secondary">Grunt</a>
-								<a href="#" class="badge badge-pill badge-soft-secondary">Node JS</a>
-								<a href="#" class="badge badge-pill badge-soft-secondary">SCSS</a>
-							</div>
-							<div class="dropdown-divider"></div>
-							<h6 class="dropdown-header">Help
-							</h6>
-							<a href="javascript:void(0);" class="dropdown-item">
-								<div class="media align-items-center">
-									<div class="media-head me-2">
-										<div class="avatar avatar-icon avatar-xs avatar-soft-light avatar-rounded">
-											<span class="initial-wrap">
-												<span class="svg-icon">
-													<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-corner-down-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-														<path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-														<path d="M6 6v6a3 3 0 0 0 3 3h10l-4 -4m0 8l4 -4"></path>
-													 </svg>
-												</span>
-											</span>
-										</div>
-									</div>
-									<div class="media-body">
-										How to setup theme?
-									</div>
-								</div>
-							</a>
-							<a href="javascript:void(0);" class="dropdown-item">
-								<div class="media align-items-center">
-									<div class="media-head me-2">
-										<div class="avatar avatar-icon avatar-xs avatar-soft-light avatar-rounded">
-											<span class="initial-wrap">
-												<span class="svg-icon">
-													<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-corner-down-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-														<path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-														<path d="M6 6v6a3 3 0 0 0 3 3h10l-4 -4m0 8l4 -4"></path>
-													 </svg>
-												</span>
-											</span>
-										</div>
-									</div>
-									<div class="media-body">
-										View detail documentation
-									</div>
-								</div>
-							</a>
-							<div class="dropdown-divider"></div>
-							<h6 class="dropdown-header">Users
-							</h6>
-							<a href="javascript:void(0);" class="dropdown-item">
-								<div class="media align-items-center">
-									<div class="media-head me-2">
-										<div class="avatar avatar-xs avatar-rounded">
-											<img src="/dist/img/avatar3.jpg" alt="user" class="avatar-img">
-										</div>
-									</div>
-									<div class="media-body">
-										Sarah Jone
-									</div>
-								</div>
-							</a>
-							<a href="javascript:void(0);" class="dropdown-item">
-								<div class="media align-items-center">
-									<div class="media-head me-2">
-										<div class="avatar avatar-xs avatar-soft-primary avatar-rounded">
-											<span class="initial-wrap">J</span>
-										</div>
-									</div>
-									<div class="media-body">
-										Joe Jackson
-									</div>
-								</div>
-							</a>
-							<a href="javascript:void(0);" class="dropdown-item">
-								<div class="media align-items-center">
-									<div class="media-head me-2">
-										<div class="avatar avatar-xs avatar-rounded">
-											<img src="/dist/img/avatar4.jpg" alt="user" class="avatar-img">
-										</div>
-									</div>
-									<div class="media-body">
-										Maria Richard
-									</div>
-								</div>
-							</a>
-						</div>
-						<div class="dropdown-footer d-xl-flex d-none"><a href="#"><u>Search all</u></a></div>
-					</div>
-				</form>
+				
 				<!-- /Search -->
 			</div>
 			<!-- /Start Nav -->
@@ -228,7 +106,7 @@ Contact: contact@hencework.com
 												</div>
 											</div>
 											<div class="fs-7">contact@hencework.com</div>
-											<a href="#" class="d-block fs-8 link-secondary"><u>Sign Out</u></a>
+											<a href="/sign-out" class="d-block fs-8 link-secondary"><u>Sign Out</u></a>
 										</div>
 									</div>
 								</div>
@@ -249,7 +127,7 @@ Contact: contact@hencework.com
 			<!-- Brand -->
 			<div class="menu-header d-xl-none">
 				<span>
-					<a class="navbar-brand" href="index.html">
+					<a class="navbar-brand" href="/">
 						<img class="brand-img img-fluid" src="/images/logo.png" alt="brand" style="width: 175px;"/>
 					</a>
 					<button class="btn btn-icon btn-rounded btn-flush-dark flush-soft-hover navbar-toggle">
@@ -292,7 +170,7 @@ Contact: contact@hencework.com
 
 										</span>
 									</span>
-									<span class="nav-link-text">गहने</span>
+									<span class="nav-link-text">Loan (गहने)</span>
 								</a>
 								<ul id="dash_chat" class="nav flex-column collapse   nav-children">
 									<li class="nav-item">
@@ -302,6 +180,13 @@ Contact: contact@hencework.com
 											</li>
 											<li class="nav-item">
 												<a class="nav-link" href="/dashboard/loan/list"><span class="nav-link-text">Loan List (गहने की सूची)</span></a>
+											</li>
+											<li class="nav-item"></li>
+												<a class="nav-link" href="/dashboard/one/year/old/loan"><span class="nav-link-text">1 year old Funds (एक साल पुराने गहने)</span></a>
+											</li>
+
+											<li class="nav-item"></li>
+												<a class="nav-link" href="/dashboard/loan/history"><span class="nav-link-text">History (पुराने गहने की सूची)</span></a>
 											</li>
 											
 										
@@ -360,16 +245,16 @@ Contact: contact@hencework.com
 
 										</span>
 									</span>
-									<span class="nav-link-text">Investor</span>
+									<span class="nav-link-text">Investor (व्यापारी)</span>
 								</a>
 								<ul id="dash_contact" class="nav flex-column collapse   nav-children">
 									<li class="nav-item">
 										<ul class="nav flex-column">
 											<li class="nav-item">
-												<a class="nav-link" href="/dashboard/new_investor"><span class="nav-link-text">New Investor</span></a>
+												<a class="nav-link" href="/dashboard/new_investor"><span class="nav-link-text">New Investor (नए व्यापारी)</span></a>
 											</li>
 											<li class="nav-item">
-												<a class="nav-link" href="/dashboard/investor/list"><span class="nav-link-text">Investor List</span></a>
+												<a class="nav-link" href="/dashboard/investor/list"><span class="nav-link-text">Investor List (व्यापारी की सूची)</span></a>
 											</li>
 											
 										</ul>

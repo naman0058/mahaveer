@@ -13,7 +13,7 @@
 								<div class="d-flex align-items-center">
 									<div class="dropdown">
 										<a class="contactapp-title link-dark" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-											<h1>Investment List</h1>
+											<h1 style="color: #1B5E20;">Investment List (गहने की सूची)</h1>
 										</a>
 									
 									</div>
@@ -21,15 +21,7 @@
 								</div>
 
 
-								<div class="dropdown">
-									<a  class="contactapp-title"  href="/dashboard/investment/history?investorid=<%=investorid%>" role="button" aria-haspopup="true" aria-expanded="false">
-										<h1>View History</h1>
-									</a>
-
-									
 								
-								</div>
-							
 							</header>
 
 
@@ -70,6 +62,16 @@
 								.contact-card {
 									min-height: 100px; /* Sets a minimum height for the card to ensure consistency */
 								}
+
+								.card-body {
+    padding: 20px;
+}
+.user-info p {
+    font-size: 14px;
+    margin-bottom: 8px;
+}
+
+
 							</style>
 
 							<div class="contact-body">
@@ -85,71 +87,63 @@
                                         <!-- Card Grid -->
                                         <div class="row" id="contact-cards">
                                             <!-- Contact Card 1 -->
-
+											<% if(result.length == 0){ %>
+                                                <p class="text-black" style="text-align: center;font-weight: bold;">No Data Found</p>
+                                                                                        <% } %>
                                             <% for(i=0;i<result.length;i++) { %>
 
-                                            <div class="col-xl-3 col-lg-4 col-md-6 mb-4 contact-card">
-                                                <div class="card card-border contact-card">
-													<div class="card-body">
-													
-													
-														<div class="user-name"></span><b>Customer Name -</b> <%=result[i].customername.toUpperCase()%></div>
-														<div class="user-name"></span><b>Father Name -</b> <%=result[i].customerfather_name.toUpperCase()%></div>
-
-                                                                                                               														
-														<div class="user-email"><b>Items - </b><%=result[i].item_name%></div>
-														<div class="user-email"><b>Weight - </b><%=result[i].item_weight%></div>
-                                                        <%if(result[i].item_description) { %>
-														<div class="user-email"><b>Additional - </b><%=result[i].item_description%></div>
-                                                         <% } %>
-														<div class="user-email"><b>Transfer Date - </b> <%=result[i].transfer_date%></div>
-														<div class="user-email"><b>Amount - </b> <%=result[i].amount%></div>
-														
-                                                        <div class="user-email"><b>Rate of Interest - </b> <%=result[i].transfer_rate%>%</div>
-                                                        <div class="user-email"><b>Time - </b> 
-    <% if (result[i].timeDiff.years > 0) { %>
-        <%= result[i].timeDiff.years %> Years
-    <% } %>
-    <% if (result[i].timeDiff.months > 0) { %>
-        <%= result[i].timeDiff.months %> Months
-    <% } %>
-    <% if (result[i].timeDiff.days > 0) { %>
-        <%= result[i].timeDiff.days %> Days
-    <% } %>
-    <% if (result[i].timeDiff.years === 0 && result[i].timeDiff.months === 0 && result[i].timeDiff.days === 0) { %>
-        Less than a day
-    <% } %>
-</div>
-                                                        <div class="user-email"><b>Interest Amount - </b> 
-                                                            <%= result[i].interestAmount.toFixed(2) %>
-                                                        </div>
-
-													</div>
-
-
-
-													<div class="card-footer text-muted position-relative">
-
-                                                        <% if(result[i].istransfer == 'yes') { %>
-
-                                                            
-
-                                                            <a href="#" class="">
-                                                                <span class="fs-7 lh-1"><%=result[i].investorname%>  (<%=result[i].transfer_date%>)</span><br/>
-                                                            </a> 
-                                                         
-														
-
-                                                        <% } else { %>
-                                                            <a href="/loan/transfer?loanid=<%=result[i].id%>" class="d-flex align-items-center">
-                                                                <span class="fs-7 lh-1">Transfer</span>
-                                                            </a>
-                                                            <% } %>
-														
+												<div class="col-xl-3 col-lg-4 col-md-6 mb-4 contact-card">
+													<div class="card card-border contact-card" style="box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); border-radius: 10px;">
+														<div class="card-body text-center" style="padding: 20px;">
+															<!-- Avatar -->
+															<div class="avatar avatar-xl avatar-rounded" style="margin-bottom: 15px;">
+																<img src="<%=result[i].item_image%>" alt="user" class="avatar-img" style="border-radius: 50%; width: 100px; height: 100px; object-fit: cover; box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);">
+															</div>
+												
+															<!-- Customer Info -->
+															<div class="user-info">
+																<p><b>Customer Name - </b> <%=result[i].customername.toUpperCase()%></p>
+																<p><b>Father Name - </b> <%=result[i].customerfather_name.toUpperCase()%></p>
+																<p><b>Items - </b><%=result[i].item_name%></p>
+																<p><b>Weight - </b><%=result[i].item_weight%></p>
+																<% if(result[i].item_description) { %>
+																	<p><b>Additional - </b><%=result[i].item_description%></p>
+																<% } %>
+																<p><b>Date - </b> <%=result[i].transfer_date%></p>
+																<p><b>Amount - </b> ₹<%=result[i].amount%></p>
+																<p><b>Interest Rate - </b> <%=result[i].transfer_rate%>%</p>
+																<p><b>Time - </b>
+																	<% if (result[i].timeDiff.years > 0) { %>
+																		<%= result[i].timeDiff.years %> Years
+																	<% } %>
+																	<% if (result[i].timeDiff.months > 0) { %>
+																		<%= result[i].timeDiff.months %> Months
+																	<% } %>
+																	<% if (result[i].timeDiff.days > 0) { %>
+																		<%= result[i].timeDiff.days %> Days
+																	<% } %>
+																	<% if (result[i].timeDiff.years === 0 && result[i].timeDiff.months === 0 && result[i].timeDiff.days === 0) { %>
+																		Less than a day
+																	<% } %>
+																</p>
+																<p><b>Interest Amount - </b> ₹<%= result[i].interestAmount.toFixed(2) %></p>
+															</div>
+														</div>
+												
+														<!-- Transfer Button -->
+														<div class="card-footer text-muted text-center" style="padding: 10px;">
+															<% if(result[i].istransfer == 'yes') { %>
+																<a href="#" class="text-success">
+																	<span class="fs-7 lh-1" style="font-weight: bold;"><%=result[i].investorname%> (<%=result[i].transfer_date%>)</span>
+																</a>
+															<% } else { %>
+																<a href="/loan/transfer?loanid=<%=result[i].id%>" class="btn btn-success" style="width: 100%; padding: 10px; font-size: 14px;">
+																	<i class="fas fa-exchange-alt"></i> Transfer
+																</a>
+															<% } %>
+														</div>
 													</div>
 												</div>
-                                            </div>
-                                    
                                             <% } %>
                                             <!-- Contact Card 2 -->
                                          
