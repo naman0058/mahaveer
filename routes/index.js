@@ -533,7 +533,8 @@ router.post('/dashboard/data/:tablename/insert', async (req, res) => {
     const result = await queryAsync(`INSERT INTO ?? SET ?`, [tablename, body]);
 
     // Return success response
-    res.json({ msg: 'success' });
+    // res.json({ msg: 'success' });
+    res.render('print',{body})
   } catch (err) {
     console.error('Database Insertion Error:', err.message);
     res.status(500).json({ msg: 'Internal Server Error' });

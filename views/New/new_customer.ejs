@@ -46,10 +46,10 @@
                 <label for="alternate_number" class="form-label">Alternate Mobile Number (वैकल्पिक मोबाइल नंबर)</label>
                 <input type="text" name="alternate_number" id="alternate_number" class="form-control" placeholder="Alternate Mobile Number (वैकल्पिक मोबाइल नंबर)">
             </div>
-            <!-- <div class="col-md-12">
+            <div class="col-md-12">
                 <label for="photo" class="form-label">Photo (फोटो)</label>
                 <input type="file" class="form-control" id="photo" required>
-            </div> -->
+            </div>
             <div class="col-12">
                 <label for="address" class="form-label">Address (ग्राहक का पता)</label>
                 <textarea class="form-control" id="address" name="address" placeholder="Address (ग्राहक का पता)" required></textarea>
@@ -89,40 +89,40 @@ function submitForm() {
     } else if (address === '') {
         alert('Enter Customer Address');
         return;
-    // } else if (photo === '') {
-    //     alert('Select Customer Photo');
-    //     return;
-    // }
+    } else if (photo === '') {
+        alert('Select Customer Photo');
+        return;
+    }
 
-    // const url = "https://api.cloudinary.com/v1_1/dciqc2rgl/image/upload";
-    // const loaderOverlay = document.getElementById("loader-overlay");
-    // loaderOverlay.style.display = "flex"; // Show overlay
+    const url = "https://api.cloudinary.com/v1_1/dciqc2rgl/image/upload";
+    const loaderOverlay = document.getElementById("loader-overlay");
+    loaderOverlay.style.display = "flex"; // Show overlay
 
-    // const fileInput = document.querySelector("[type=file]");
-    // const file = fileInput.files[0];
+    const fileInput = document.querySelector("[type=file]");
+    const file = fileInput.files[0];
 
-    // // Check if a file is selected
-    // if (!file) {
-    //     alert('No photo selected');
-    //     loaderOverlay.style.display = "none"; // Hide overlay if no file
-    //     return;
-    // }
+    // Check if a file is selected
+    if (!file) {
+        alert('No photo selected');
+        loaderOverlay.style.display = "none"; // Hide overlay if no file
+        return;
+    }
 
-    // const formData = new FormData();
-    // formData.append("file", file);
-    // formData.append("upload_preset", "docs_upload_example_us_preset");
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", "docs_upload_example_us_preset");
 
-    // // Upload the photo to Cloudinary
-    // fetch(url, {
-    //     method: "POST",
-    //     body: formData,
-    // })
-    //     .then((response) => response.json())
-    //     .then((data) => {
-    //         const photoUrl = data.url; // Get uploaded photo URL
+    // Upload the photo to Cloudinary
+    fetch(url, {
+        method: "POST",
+        body: formData,
+    })
+        .then((response) => response.json())
+        .then((data) => {
+            const photoUrl = data.url; // Get uploaded photo URL
 
             // Send customer data to the server
-            $.post('/dashboard/data/customer/insert', {  name, number, father_name, address,alternate_number }, (data) => {
+            $.post('/dashboard/data/customer/insert', { photo: photoUrl, name, number, father_name, address,alternate_number }, (data) => {
                 if (data.msg === 'success') {
                     alert('Success');
                     window.location.reload()
@@ -131,12 +131,12 @@ function submitForm() {
                 }
                 loaderOverlay.style.display = "none"; // Hide overlay after response
             });
-        // })
-        // .catch((error) => {
-        //     console.error("Error:", error);
-        //     alert('Photo upload failed');
-        //     loaderOverlay.style.display = "none"; // Hide overlay if there's an error
-        // });
+        })
+        .catch((error) => {
+            console.error("Error:", error);
+            alert('Photo upload failed');
+            loaderOverlay.style.display = "none"; // Hide overlay if there's an error
+        });
 }
 
 

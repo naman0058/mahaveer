@@ -26,7 +26,7 @@
        
         </div>
         <!-- /Page Header -->									
-        <form class="row g-3 mt-5"  action="/dashboard/data/loan/insert" method="post">
+        <form class="row g-3 mt-5" id="myForm" method="post" enctype="multipart/form-data">
             <div class="col-md-6">
                 <label for="customerSelect" class="form-label">Select Customer (ग्राहक चुनें)</label>
                 <select id="customerSelect" class="form-control select2">
@@ -35,16 +35,16 @@
             </div>
             <div class="col-md-6">
                 <label for="inputPassword4" class="form-label">Father Name (पिता का नाम)</label>
-                <input type="text"  id="father_name" class="form-control" placeholder="Father Name (पिता का नाम)" readonly>
+                <input type="text" name="father_name" id="father_name" class="form-control" placeholder="Father Name (पिता का नाम)" readonly>
             </div>
             <div class="col-md-6">
                 <label for="inputAddress" class="form-label">Mobile Number (मोबाइल नंबर)</label>
-                <input type="text" id="number" class="form-control" placeholder="Mobile Number (मोबाइल नंबर)" readonly>
+                <input type="text" name="number" id="number" class="form-control" placeholder="Mobile Number (मोबाइल नंबर)" readonly>
             </div>
             
             <div class="col-md-6">
                 <label for="inputCity" class="form-label">Address (पता)</label>
-                <input class="form-control" id="address" " placeholder="Customer Address (ग्राहक का पता)" readonly>
+                <input class="form-control" id="address" name="address" placeholder="Customer Address (ग्राहक का पता)" readonly>
             </div>
         
             <div class="col-md-6">
@@ -81,10 +81,10 @@
                 <input class="form-control" type="text" id="amount" name="amount" placeholder="Amount (राशि)">
             </div>
             
-            <!-- <div class="col-md-6">
+            <div class="col-md-6">
                 <label for="inputCity" class="form-label">Item Image (आइटम की छवि)</label>
                 <input class="form-control" type="file" id="item_image" name="item_image">
-            </div> -->
+            </div>
             
             <div class="col-md-6">
                 <label for="inputCity" class="form-label">Item Description (Optional) (आइटम विवरण)</label>
@@ -92,7 +92,7 @@
             </div>
             
             <div class="col-12">
-                <button type="submit"  style="float: right;" class="btn btn-primary">Submit Request (गहने फॉर्म जमा करें)</button>
+                <button type="button" onclick="submitForm()" style="float: right;" class="btn btn-primary">Submit Request (गहने फॉर्म जमा करें)</button>
             </div>
         </form>
         
