@@ -26,7 +26,7 @@
        
         </div>
         <!-- /Page Header -->									
-        <form class="row g-3 mt-5"  action="/dashboard/data/loan/insert" method="post">
+        <form class="row g-3 mt-5" id="myForm" method="post" enctype="multipart/form-data">
             <div class="col-md-6">
                 <label for="customerSelect" class="form-label">Select Customer (ग्राहक चुनें)</label>
                 <select id="customerSelect" class="form-control select2">
@@ -35,16 +35,16 @@
             </div>
             <div class="col-md-6">
                 <label for="inputPassword4" class="form-label">Father Name (पिता का नाम)</label>
-                <input type="text"  id="father_name" class="form-control" placeholder="Father Name (पिता का नाम)" readonly>
+                <input type="text" name="father_name" id="father_name" class="form-control" placeholder="Father Name (पिता का नाम)" readonly>
             </div>
             <div class="col-md-6">
                 <label for="inputAddress" class="form-label">Mobile Number (मोबाइल नंबर)</label>
-                <input type="text" id="number" class="form-control" placeholder="Mobile Number (मोबाइल नंबर)" readonly>
+                <input type="text" name="number" id="number" class="form-control" placeholder="Mobile Number (मोबाइल नंबर)" readonly>
             </div>
             
             <div class="col-md-6">
                 <label for="inputCity" class="form-label">Address (पता)</label>
-                <input class="form-control" id="address" " placeholder="Customer Address (ग्राहक का पता)" readonly>
+                <input class="form-control" id="address" name="address" placeholder="Customer Address (ग्राहक का पता)" readonly>
             </div>
         
             <div class="col-md-6">
@@ -81,10 +81,10 @@
                 <input class="form-control" type="text" id="amount" name="amount" placeholder="Amount (राशि)">
             </div>
             
-            <!-- <div class="col-md-6">
+            <div class="col-md-6">
                 <label for="inputCity" class="form-label">Item Image (आइटम की छवि)</label>
                 <input class="form-control" type="file" id="item_image" name="item_image">
-            </div> -->
+            </div>
             
             <div class="col-md-6">
                 <label for="inputCity" class="form-label">Item Description (Optional) (आइटम विवरण)</label>
@@ -92,7 +92,7 @@
             </div>
             
             <div class="col-12">
-                <button type="submit"  style="float: right;" class="btn btn-primary">Submit Request (गहने फॉर्म जमा करें)</button>
+                <button type="button" onclick="submitForm()" style="float: right;" class="btn btn-primary">Submit Request (गहने फॉर्म जमा करें)</button>
             </div>
         </form>
         
@@ -118,6 +118,8 @@ function submitForm() {
     const rate_of_interest = $('#rate_of_interest').val();
     const customerName = $('#customerSelect option:selected').text().split(' S/O ')[0].trim();
     const date = $('#date').val();
+
+   const tokenno = generateToken()
     
 
 
@@ -176,7 +178,7 @@ function submitForm() {
             const photoUrl = data.url; // Get uploaded photo URL
 
             // Send customer data to the server
-            $.post('/dashboard/data/loan/insert', {customerid,item_name,item_weight,item_description,rate_of_interest,item_image:photoUrl,amount}, (data) => {
+            $.post('/dashboard/data/loan/insert', {customerid,item_name,item_weight,item_description,rate_of_interest,item_image:photoUrl,amount,tokenno}, (data) => {
                 if (data.msg === 'success') {
                     createPrintLayout({
         customerName,
@@ -189,7 +191,8 @@ function submitForm() {
         rate_of_interest,
         address,
         date,
-        amount
+        amount,
+        tokenno
     });
                     
                 } else {
@@ -224,6 +227,7 @@ function submitForm() {
 
 <!-- Include Select2 JS -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <style>
     /* Increase the height of the Select2 container */
@@ -293,97 +297,152 @@ function submitForm() {
 
 
 
-    function createPrintLayout(data) {
-    // Dynamically create a printable HTML structure
-    const printWindow = window.open('', '', 'height=600,width=800');
+//     function createPrintLayout(data) {
+//     // Dynamically create a printable HTML structure
+//     const printWindow = window.open('', '', 'height=600,width=800');
  
     
-    // HTML content for printing
-    const content = `
-    <html>
-    <head>
-        <title>Print Customer Information</title>
-        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-        <style>
-            body { font-family: Arial, sans-serif; }
-            .print-container { margin: 20px; }
-            .table th, .table td { text-align: left; vertical-align: middle; }
-            .signature { text-align: right; margin-top: 40px; }
-            .signature p { margin: 0; }
-        </style>
-    </head>
-    <body>
-        <div class="print-container">
-            <h2 class="mb-4">Customer Information</h2>
-            <table class="table table-bordered">
-                <tbody>
-                    <tr>
-                        <th>Date</th>
-                        <td>${data.date}</td>
-                    </tr>
-                    <tr>
-                        <th>Customer Name</th>
-                        <td>${data.customerName}</td>
-                    </tr>
-                    <tr>
-                        <th>Father Name</th>
-                        <td>${data.father_name}</td>
-                    </tr>
-                    <tr>
-                        <th>Number</th>
-                        <td>${data.number}</td>
-                    </tr>
-                    <tr>
-                        <th>Item Name</th>
-                        <td>${data.item_name}</td>
-                    </tr>
-                    <tr>
-                        <th>Item Weight</th>
-                        <td>${data.item_weight}</td>
-                    </tr>
-                    <tr>
-                        <th>Amount</th>
-                        <td>${data.amount}</td>
-                    </tr>
-                    <tr>
-                        <th>Item Description</th>
-                        <td>${data.item_description}</td>
-                    </tr>
-                    <tr>
-                        <th>Rate of Interest</th>
-                        <td>${data.rate_of_interest}</td>
-                    </tr>
-                    <tr>
-                        <th>Address</th>
-                        <td>${data.address}</td>
-                    </tr>
-                </tbody>
-            </table>
-            <div class="signature">
-                <p>_________________________</p>
-                <p>Customer Signature</p>
-            </div>
-        </div>
-    </body>
-    </html>
-`;
+//     // HTML content for printing
+//     const content = `
+//     <html>
+//     <head>
+//         <title>Print Customer Information</title>
+//         <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+//         <style>
+//             body { font-family: Arial, sans-serif; }
+//             .print-container { margin: 20px; }
+//             .table th, .table td { text-align: left; vertical-align: middle; }
+//             .signature { text-align: right; margin-top: 40px; }
+//             .signature p { margin: 0; }
+//         </style>
+//     </head>
+//     <body>
+//         <div class="print-container">
+//             <h2 class="mb-4">Customer Information</h2>
+//             <table class="table table-bordered">
+//                 <tbody>
+//                     <tr>
+//                         <th>Date</th>
+//                         <td>${data.date}</td>
+//                     </tr>
+//                     <tr>
+//                         <th>Customer Name</th>
+//                         <td>${data.customerName}</td>
+//                     </tr>
+//                     <tr>
+//                         <th>Father Name</th>
+//                         <td>${data.father_name}</td>
+//                     </tr>
+//                     <tr>
+//                         <th>Number</th>
+//                         <td>${data.number}</td>
+//                     </tr>
+//                     <tr>
+//                         <th>Item Name</th>
+//                         <td>${data.item_name}</td>
+//                     </tr>
+//                     <tr>
+//                         <th>Item Weight</th>
+//                         <td>${data.item_weight}</td>
+//                     </tr>
+//                     <tr>
+//                         <th>Amount</th>
+//                         <td>${data.amount}</td>
+//                     </tr>
+//                     <tr>
+//                         <th>Item Description</th>
+//                         <td>${data.item_description}</td>
+//                     </tr>
+//                     <tr>
+//                         <th>Rate of Interest</th>
+//                         <td>${data.rate_of_interest}%</td>
+//                     </tr>
+//                     <tr>
+//                         <th>Address</th>
+//                         <td>${data.address}</td>
+//                     </tr>
+//                 </tbody>
+//             </table>
+//             <div class="signature">
+//                 <p>_________________________</p>
+//                 <p>Customer Signature</p>
+//             </div>
+//         </div>
+//     </body>
+//     </html>
+// `;
 
-    // Write content to the new window and print
-    printWindow.document.write(content);
-    printWindow.document.close();
-    printWindow.print();
-    const checkPrintWindowClosed = setInterval(() => {
-        if (printWindow.closed) {
-            clearInterval(checkPrintWindowClosed);
-            window.location.reload(); // Reload the parent window when print window is closed
-        }
-    }, 1000); // Check every second
+//     // Write content to the new window and print
+//     printWindow.document.write(content);
+//     printWindow.document.close();
+//     printWindow.print();
+//     const checkPrintWindowClosed = setInterval(() => {
+//         if (printWindow.closed) {
+//             clearInterval(checkPrintWindowClosed);
+//             window.location.reload(); // Reload the parent window when print window is closed
+//         }
+//     }, 1000); // Check every second
   
 
+// }
+
+function generateToken() {
+    const now = new Date();
+    
+    // Get individual components of the current date and time
+    const year = now.getFullYear().toString().slice(-2); // last 2 digits of the year
+    const month = ("0" + (now.getMonth() + 1)).slice(-2); // months are zero-indexed, so add 1
+    const day = ("0" + now.getDate()).slice(-2);
+    const hours = ("0" + now.getHours()).slice(-2);
+    const minutes = ("0" + now.getMinutes()).slice(-2);
+    const seconds = ("0" + now.getSeconds()).slice(-2);
+    
+    // Combine components to create a 6-digit token
+    const token = (year + month + day + hours + minutes + seconds).slice(-6); // Take the last 6 digits
+    
+    return token;
 }
 
+function createPrintLayout(data){
+   // Use jsPDF to generate PDF
+   const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
 
+    // Adding customer information
+    doc.setFontSize(12);
+    doc.text('Customer Information', 20, 20);
+    doc.text(`Date: ${data.date}`, 20, 30);
+    doc.text(`Date: ${data.tokenno}`, 20, 30);
+    doc.text(`Customer Name: ${data.customerName}`, 20, 40);
+    doc.text(`Father Name: ${data.father_name}`, 20, 50);
+    doc.text(`Number: ${data.number}`, 20, 60);
+    doc.text(`Item Name: ${data.item_name}`, 20, 70);
+    doc.text(`Item Weight: ${data.item_weight}`, 20, 80);
+    doc.text(`Amount: ${data.amount}`, 20, 90);
+    doc.text(`Item Description: ${data.item_description}`, 20, 100);
+    doc.text(`Rate of Interest: ${data.rate_of_interest}%`, 20, 110);
+    doc.text(`Address: ${data.address}`, 20, 120);
 
+    // Save the PDF locally
+    const fileName = `Customer_${data.customerName}_${data.date}.pdf`;
+    const pdfBlob = doc.output('blob');
+    const pdfURL = URL.createObjectURL(pdfBlob);
+
+    // Option to download the PDF
+    const downloadLink = document.createElement('a');
+    downloadLink.href = pdfURL;
+    downloadLink.download = fileName;
+    downloadLink.click();
+
+    // WhatsApp sharing with phone number
+    const whatsappMessage = `Customer: ${data.customerName}\n\nAmount: ${data.amount}\n\nDate: ${data.date}\n\nToken No.: ${data.tokenno}\n\nurl:${pdfURL}`;
+    const customerPhoneNumber = data.number.replace(/\s/g, ''); // Clean phone number (remove spaces)
+    
+    const whatsappLink = `https://api.whatsapp.com/send?phone=${customerPhoneNumber}&text=${encodeURIComponent(whatsappMessage)}`;
+
+    // Open WhatsApp share option with prefilled number
+    window.open(whatsappLink, '_blank');
+}
 
 
     </script>
