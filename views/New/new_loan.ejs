@@ -436,7 +436,7 @@ function createPrintLayout(data){
 
     // WhatsApp sharing with phone number
     const whatsappMessage = `Customer: ${data.customerName}\n\nAmount: ${data.amount}\n\nDate: ${data.date}\n\nToken No.: ${data.tokenno}\n\nurl:${pdfURL}`;
-    const customerPhoneNumber = data.number.replace(/\s/g, ''); // Clean phone number (remove spaces)
+    const customerPhoneNumber = 91+data.number.replace(/\s/g, ''); // Clean phone number (remove spaces)
     
     const whatsappLink = `https://api.whatsapp.com/send?phone=${customerPhoneNumber}&text=${encodeURIComponent(whatsappMessage)}`;
 
