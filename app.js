@@ -34,9 +34,9 @@ module.exports = function ({ viewsPath, publicPath }) {
     }
   }
 
-  verifyLicenseFile(); // Uncomment when ready
+  // verifyLicenseFile(); // Uncomment when ready
   // cron.schedule('0 0 * * *', verifyLicenseFile); // Uncomment when ready
- cron.schedule('0 */12 * * *', verifyLicenseFile);
+//  cron.schedule('0 */12 * * *', verifyLicenseFile);
 
   // Middlewares
   app.use(logger('dev'));
