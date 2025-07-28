@@ -1,56 +1,113 @@
-var createError = require('http-errors');
-const http = require('http');
-var cookieSession = require('cookie-session')
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+// app.js
+module.exports = function ({ viewsPath, publicPath }) {
+  const express = require('express');
+  const path = require('path'); // Still needed for path.join
+  const fs = require('fs');
+  const cookieSession = require('cookie-session');
+  const cookieParser = require('cookie-parser');
+  const logger = require('morgan');
+  const createError = require('http-errors');
+  const axios = require('axios');
+  const cron = require('node-cron');
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+  const app = express();
 
-var app = express();
+  const indexRouter = require('./routes/index');
+  const usersRouter = require('./routes/users');
+  const licenseRoute = require('./routes/license');
 
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
+  let isLicenseValid = false;
+  // If license.key is *not* embedded, it must be present next to the .exe
+  // In this case, process.cwd() is fine for an external file.
+  const licensePath = path.join(process.cwd(), 'license.key');
+  let licenseKey = '';
 
-app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+  async function verifyLicenseFile() {
+    try {
+      licenseKey = fs.readFileSync(licensePath, 'utf-8').trim();
+      const res = await axios.post('https://filemakr.com/api/verify/license', { key: licenseKey });
+      isLicenseValid = res.data.valid;
+      console.log(isLicenseValid ? '✅ License verified' : '❌ License invalid');
+    } catch (err) {
+      console.log('❌ License check failed');
+      isLicenseValid = false;
+    }
+  }
+
+  verifyLicenseFile(); // Uncomment when ready
+  // cron.schedule('0 0 * * *', verifyLicenseFile); // Uncomment when ready
+ cron.schedule('0 */12 * * *', verifyLicenseFile);
+
+  // Middlewares
+  app.use(logger('dev'));
+  app.use(express.json());
+  app.use(express.urlencoded({ extended: false }));
+  app.use(cookieParser());
 
 
+  const ejs = require('ejs');
+  const { readEmbeddedFile } = require('./utils/fileHelper');
 
-app.use(cookieSession({
-  name: 'session',
-  keys: ['loan_management_app'],
-  resave: false,
-    saveUninitialized: true,
-    cookie: { secure: true },
+  app.get('/debug-view', (req, res) => {
+    try {
+      // viewsPath already points to the correct embedded 'views' directory
+      const templatePath = path.join(viewsPath, 'error.ejs');
+      const template = readEmbeddedFile(templatePath);
+      const html = ejs.render(template, { message: 'Test', error: {} });
+      res.send(html);
+    } catch (e) {
+      res.send('❌ Failed: ' + e.message);
+    }
+  });
 
-  // Cookie Options
-  maxAge: 24 * 60 * 60 * 1000 // 24 hours
-}))
+  // Monkey-patch res.render BEFORE routes
+  app.use((req, res, next) => {
+    res.render = function (view, options = {}, callback) {
+      try {
+        // viewsPath already points to the correct embedded 'views' directory
+        const templatePath = path.join(viewsPath, `${view}.ejs`);
+        const template = readEmbeddedFile(templatePath);
+        const html = ejs.render(template, { ...res.locals, ...options, filename: templatePath });
+        if (callback) return callback(null, html);
+        res.send(html);
+      } catch (err) {
+        if (callback) return callback(err);
+        next(err);
+      }
+    };
+    next();
+  });
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
+  app.use((req, res, next) => {
+    if (!isLicenseValid && req.path !== '/license') {
+      return res.redirect('/license');
+    }
+    next();
+  });
 
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  next(createError(404));
-});
+  // This is correct as publicPath is handled by server.js
+  app.use(express.static(publicPath));
+  app.use(cookieSession({
+    name: 'session',
+    keys: ['secret-key'],
+    maxAge: 24 * 60 * 60 * 1000,
+  }));
 
-// error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+  // Routes
+  app.use('/', indexRouter);
+  app.use('/users', usersRouter);
+  app.use('/license', licenseRoute);
 
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
-});
+  // 404 handler
+  app.use((req, res, next) => next(createError(404)));
 
-module.exports = app;
+  // Error handler (render via monkey-patched res.render)
+  app.use((err, req, res, next) => {
+    res.status(err.status || 500).render('error', {
+      message: err.message,
+      error: req.app.get('env') === 'development' ? err : {}
+    });
+  });
+
+  return app;
+};

@@ -29,7 +29,8 @@
        
         </div>
         <!-- /Page Header -->									
-        <form class="row g-3 mt-5" id="myForm" method="post" enctype="multipart/form-data">
+       <form class="row g-3 mt-5" id="myForm" action="/dashboard/data/customer/insert" method="POST" enctype="multipart/form-data">
+
             <div class="col-md-6">
                 <label for="name" class="form-label">Customer Name (ग्राहक का नाम)</label>
                 <input type="text" name="name" id="name" required class="form-control" placeholder="Customer Name (ग्राहक का नाम)">
@@ -48,7 +49,7 @@
             </div>
             <div class="col-md-12">
                 <label for="photo" class="form-label">Photo (फोटो)</label>
-                <input type="file" class="form-control" id="photo" required>
+               <input type="file" class="form-control" id="photo" name="photo" required>
             </div>
             <div class="col-12">
                 <label for="address" class="form-label">Address (ग्राहक का पता)</label>
@@ -61,6 +62,14 @@
         </form>
 
 
+        <!-- Loader Overlay -->
+<div id="loader-overlay" style="display: none; position: fixed; top: 0; left: 0; height: 100%; width: 100%; z-index: 9999; background: rgba(0,0,0,0.6); justify-content: center; align-items: center;">
+  <div class="spinner-border text-light" role="status" style="width: 3rem; height: 3rem;">
+    <span class="visually-hidden">Loading...</span>
+  </div>
+</div>
+
+
 <%- include ('.././footer.ejs') %>
 
 
@@ -71,76 +80,49 @@
 
 <script>
 function submitForm() {
-    const name = $('#name').val();
-    const father_name = $('#father_name').val();
-    const number = $('#number').val();
-    const photo = $('#photo').val();
-    const address = $('#address').val();
-    const alternate_number = $('#alternate_number').val();
+  const name = $('#name').val();
+  const father_name = $('#father_name').val();
+  const number = $('#number').val();
+  const photo = $('#photo')[0].files[0];  // File input
+  const address = $('#address').val();
+  const alternate_number = $('#alternate_number').val();
 
+  if (!name || !father_name || !address || !photo) {
+    alert('Please fill all required fields');
+    return;
+  }
 
-    // Basic validation checks
-    if (name === '') {
-        alert('Enter Customer Name');
-        return;
-    } else if (father_name === '') {
-        alert('Enter Father Name');
-        return;
-    } else if (address === '') {
-        alert('Enter Customer Address');
-        return;
-    } else if (photo === '') {
-        alert('Select Customer Photo');
-        return;
-    }
+  const loaderOverlay = document.getElementById("loader-overlay");
+  loaderOverlay.style.display = "flex"; // Show loader
 
-    const url = "https://api.cloudinary.com/v1_1/dciqc2rgl/image/upload";
-    const loaderOverlay = document.getElementById("loader-overlay");
-    loaderOverlay.style.display = "flex"; // Show overlay
+  const formData = new FormData();
+  formData.append("name", name);
+  formData.append("father_name", father_name);
+  formData.append("number", number);
+  formData.append("photo", photo);
+  formData.append("address", address);
+  formData.append("alternate_number", alternate_number);
 
-    const fileInput = document.querySelector("[type=file]");
-    const file = fileInput.files[0];
-
-    // Check if a file is selected
-    if (!file) {
-        alert('No photo selected');
-        loaderOverlay.style.display = "none"; // Hide overlay if no file
-        return;
-    }
-
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("upload_preset", "docs_upload_example_us_preset");
-
-    // Upload the photo to Cloudinary
-    fetch(url, {
-        method: "POST",
-        body: formData,
+  fetch("/dashboard/data/customer/insert", {
+    method: "POST",
+    body: formData
+  })
+    .then(res => res.json())
+    .then(data => {
+      loaderOverlay.style.display = "none";
+      if (data.msg === "success") {
+        alert("✅ Form submitted successfully!");
+        window.location.reload(); // or redirect if needed
+      } else {
+        alert("❌ Something went wrong: " + data.msg);
+      }
     })
-        .then((response) => response.json())
-        .then((data) => {
-            const photoUrl = data.url; // Get uploaded photo URL
-
-            // Send customer data to the server
-            $.post('/dashboard/data/customer/insert', { photo: photoUrl, name, number, father_name, address,alternate_number }, (data) => {
-                if (data.msg === 'success') {
-                    alert('Success');
-                    window.location.reload()
-                } else {
-                    alert('An Error Occured Please Try again Later');
-                }
-                loaderOverlay.style.display = "none"; // Hide overlay after response
-            });
-        })
-        .catch((error) => {
-            console.error("Error:", error);
-            alert('Photo upload failed');
-            loaderOverlay.style.display = "none"; // Hide overlay if there's an error
-        });
+    .catch(error => {
+      loaderOverlay.style.display = "none";
+      console.error("Error:", error);
+      alert("⚠️ Error submitting form. Please try again.");
+    });
 }
 
 
-  </script>
-  
-
-													
+</script>

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>License Activation</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+
+* {
+  box-sizing: border-box;
+}
+
+form input[type="text"] {
+  width: 100%;
+  padding: 12px 14px;
+  margin: 15px 0;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 15px;
+  background-color: #f9f9f9;
+  transition: border 0.3s ease, box-shadow 0.3s ease;
+}
+
+form input[type="text"]:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.15);
+}
+
+    :root {
+      --primary-bg: #00585F;
+      --card-bg: #ffffff;
+      --text-color: #333;
+      --link-color: #007bff;
+      --btn-color: #007bff;
+      --btn-hover: #0056b3;
+      --border-radius: 10px;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--primary-bg);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      color: var(--text-color);
+    }
+
+    .container {
+      background: var(--card-bg);
+      padding: 30px 25px;
+      border-radius: var(--border-radius);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+      width: 90%;
+      max-width: 420px;
+      text-align: center;
+    }
+
+    h2 {
+      color: #003336;
+      margin-bottom: 15px;
+    }
+
+    form {
+      margin-bottom: 25px;
+    }
+
+    form input[type="text"] {
+      width: 100%;
+      padding: 12px;
+      margin: 15px 0;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 15px;
+    
+    }
+
+    form button {
+      width: 100%;
+      padding: 12px;
+      background-color: var(--btn-color);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    form button:hover {
+      background-color: var(--btn-hover);
+    }
+
+    .qr-section {
+      margin-top: 30px;
+    }
+
+    .qr-section h3 {
+      margin-bottom: 15px;
+      color: #003336;
+    }
+
+    .qr-section img {
+      max-width: 160px;
+      border-radius: 8px;
+    }
+
+    .info-text {
+      font-size: 14px;
+      color: #555;
+      margin: 10px 0 0;
+    }
+
+    .message {
+      background: #eaf4ff;
+      padding: 10px;
+      border-left: 4px solid #2196f3;
+      margin-bottom: 20px;
+      border-radius: 6px;
+      text-align: left;
+    }
+
+    a.payment-link {
+      display: inline-block;
+      margin-top: 12px;
+      color: var(--link-color);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    a.payment-link:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 480px) {
+      h2 {
+        font-size: 20px;
+      }
+
+      form button {
+        font-size: 15px;
+      }
+
+      .qr-section h3 {
+        font-size: 18px;
+      }
+
+      .info-text {
+        font-size: 13px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>🔒 License Activation</h2>
+
+    <% if (typeof message !== 'undefined') { %>
+      <div class="message"><%= message %></div>
+    <% } %>
+
+    <form method="POST" action="/license">
+      <input type="text" name="key" placeholder="Enter License Key" required>
+      <button type="submit">Activate License</button>
+    </form>
+
+    <div class="qr-section">
+      <h3>💳 Make a Payment</h3>
+      <img src="https://res.cloudinary.com/dggf8vl9p/image/upload/v1752004615/qrcode_ogjbyw.jpg" alt="Scan QR to Pay">
+      <p class="info-text">
+        After making the payment, please send the screenshot to <br>
+        📱 <strong>+91-8319339945</strong> (via WhatsApp)
+      </p>
+     
+    </div>
+  </div>
+</body>
+</html>

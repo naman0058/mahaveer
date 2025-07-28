@@ -9,7 +9,9 @@ var verify = require('./verify')
 const util = require('util');
 const queryAsync = util.promisify(pool.query).bind(pool);
 const allowedTables = ['customer', 'investor', 'loan']; // Define allowed tables
+const getLocalIPv4 = require('../utils/ipHelper'); 
 
+const upload = require('./multer');
 
 /* GET home page. */
 router.get('/', verify.vendorAuthenticationToken, async function (req, res, next) {
@@ -37,10 +39,12 @@ router.get('/', verify.vendorAuthenticationToken, async function (req, res, next
   try {
     // Using promise-based query execution for better error handling and async flow
     const [loanResults, investorResults] = await queryAsync(query, [vendorId, vendorId]);
-
+  const localIP = getLocalIPv4();
+  const port = 3000; // change if needed
+  const url = `http://${localIP}:${port}`;
     // Send the combined results as JSON
     // res.json({ loanResults, investorResults });
-    res.render(`${folder}/dashboard`,{loanResults, investorResults})
+    res.render(`${folder}/dashboard`,{loanResults, investorResults,qrUrl: url})
   } catch (err) {
     console.error('Error executing queries:', err);
     res.status(500).json({ msg: 'Server error' });
@@ -232,7 +236,7 @@ LIMIT ? OFFSET ?
         };
       });
       
-      res.render(`${listFolder}/loan`, { title: 'Express', result: updatedResults, tablename:'loan',customerid:req.query.customerid });
+      res.render(`${listFolder}/customerloan`, { title: 'Express', result: updatedResults, tablename:'loan',customerid:req.query.customerid });
     
     
   } catch (err) {
@@ -438,9 +442,9 @@ router.get('/loan/transfer',(req,res)=>{
 
 
 
-router.get('/loan/assign', async (req, res) => {
-  const { investorid, loanid } = req.query;
-  const today = verify.getCurrentDate();
+router.post('/loan/assign', async (req, res) => {
+  const { investorid, loanid , transfer_date } = req.body;
+console.log('body',req.body)
 
   // Validate input to prevent SQL Injection and other errors
   if (!investorid || !loanid) {
@@ -471,10 +475,10 @@ router.get('/loan/assign', async (req, res) => {
     // Update the loan using a prepared statement
     await queryAsync(
       'UPDATE loan SET istransfer = ?, investorid = ?, transfer_date = ?, transfer_rate = ? WHERE id = ?',
-      ['yes', investorid, today, transfer_rate, loanid]
+      ['yes', investorid, transfer_date, transfer_rate, loanid]
     );
 
-    res.redirect('/dashboard/loan/list');
+    res.redirect(`/dashboard/loan/details?loanid=${loanid}`);
 
   } catch (err) {
     console.error('Error processing loan assignment:', err);
@@ -513,33 +517,86 @@ router.get('/api/customers/:id',verify.vendorAuthenticationToken,(req,res)=>{
 
 
 
-router.post('/dashboard/data/:tablename/insert', async (req, res) => {
+// router.post('/dashboard/data/:tablename/insert', async (req, res) => {
+//   const { tablename } = req.params;
+//   const body = req.body;
+//   if(tablename == 'loan'){
+//   body.created_at = req.body.created_at;
+
+//   }
+//   else{
+//   body.created_at = verify.getCurrentDate();
+
+//   }
+//   body.updated_at = verify.getCurrentDate();
+//   body.vendorid = req.session.vendorid;
+//   body.status = 'pending'
+
+//   console.log('body comes',body)
+
+//   // Validate table name to prevent SQL injection
+//   if (!allowedTables.includes(tablename)) {
+//     return res.status(400).json({ msg: 'Invalid Data' });
+//   }
+
+//   try {
+//     // Use parameterized queries to prevent SQL injection
+//     const result = await queryAsync(`INSERT INTO ?? SET ?`, [tablename, body]);
+
+//     // Return success response
+//     res.json({ msg: 'success' });
+//     // res.render('print',{body})
+//   } catch (err) {
+//     console.error('Database Insertion Error:', err.message);
+//     res.status(500).json({ msg: 'Internal Server Error' });
+//   }
+// });
+
+
+
+router.post('/dashboard/data/:tablename/insert', upload.single('photo'), async (req, res) => {
+ 
+ 
+  console.log('body',req.body)
+
+ 
   const { tablename } = req.params;
   const body = req.body;
-  body.created_at = verify.getCurrentDate();
+  console.log('tablename',tablename)
+
+
+  // Optional image column support
+  if (req.file) {
+    body.photo =  req.file.filename; // Save relative path
+  }
+
+  // Handle timestamps
+  if (tablename === 'loan') {
+    body.created_at = req.body.created_at;
+  } else {
+    body.created_at = verify.getCurrentDate();
+  }
+
   body.updated_at = verify.getCurrentDate();
   body.vendorid = req.session.vendorid;
-  body.status = 'pending'
+  body.status = 'pending';
 
-  console.log('body comes',body)
-
-  // Validate table name to prevent SQL injection
+  // Validate tablename
   if (!allowedTables.includes(tablename)) {
-    return res.status(400).json({ msg: 'Invalid Data' });
+    return res.status(400).json({ msg: 'Invalid table name' });
   }
 
   try {
-    // Use parameterized queries to prevent SQL injection
     const result = await queryAsync(`INSERT INTO ?? SET ?`, [tablename, body]);
-
-    // Return success response
-    res.json({ msg: 'success' });
-    // res.render('print',{body})
+    console.log('success')
+  res.json({ msg: 'success' });
   } catch (err) {
-    console.error('Database Insertion Error:', err.message);
+    console.error('Database Error:', err.message);
     res.status(500).json({ msg: 'Internal Server Error' });
   }
 });
+
+
 
 router.get('/login',(req,res)=>{
   res.render(`${folder}/login`, { title: 'Express' , msg : req.query.message});
@@ -578,9 +635,9 @@ console.log(today_date)
 
 router.post('/dashboard/clear/loan',(req,res)=>{
   let today = verify.getCurrentDate();
-  pool.query(`update loan set customer_image = '${req.body.customer_image}' , status = 'clear' , updated_at = '${today}' where id = '${req.body.loanid}'`,(err,result)=>{
+  pool.query(`update loan set status = 'clear' , updated_at = '${today}' where id = '${req.body.loanid}'`,(err,result)=>{
     if(err) throw err;
-    else res.json({msg:'success'})
+    else res.redirect(`/dashboard/loan/details?loanid=${req.body.loanid}`)
   })
 })
 
@@ -601,11 +658,11 @@ JOIN
 LEFT JOIN 
     investor i ON i.id = t.investorid -- Join the investor table to get the investor name
 WHERE 
-    t.vendorid = '${req.session.vendorid}' and t.status = 'clear'
+    t.customerid = '${req.query.customerid}' and t.status = 'clear'
 ORDER BY 
     t.id DESC`,(err,result)=>{
     if(err) throw err;
-    else res.render(`${listFolder}/history`,{result,type:'all'})
+    else res.render(`${listFolder}/loanhistory`,{result,type:'all'})
   })
 })
 
@@ -667,6 +724,70 @@ router.get('/sign-out', (req, res) => {
       res.redirect('/');
   });
 
+
+
+  router.post('/dashboard/update-investor', async (req, res) => {
+  const { id, name, number } = req.body;
+  try {
+    await queryAsync("UPDATE investor SET name = ?, number = ? WHERE id = ?", [name, number, id]);
+    res.redirect('/dashboard/investor/list'); // or wherever your list is shown
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Database update failed");
+  }
+});
+
+
+
+router.post('/dashboard/update-customer', upload.single('photo'), async (req, res) => {
+  const { id, name, father_name, number, alternate_number, address } = req.body;
+  const photo = req.file ? req.file.filename : null;
+
+  let updateFields = [name, father_name, number, alternate_number, address];
+  let query = `UPDATE customer SET name=?, father_name=?, number=?, alternate_number=?, address=?`;
+
+  if (photo) {
+    query += `, photo=?`;
+    updateFields.push(photo);
+  }
+
+  query += ` WHERE id=?`;
+  updateFields.push(id);
+
+  try {
+    await queryAsync(query, updateFields);
+    res.redirect('/dashboard/customer/list');
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Update failed");
+  }
+});
+
+
+
+router.post('/dashboard/update-loan', upload.single('photo'), async (req, res) => {
+  const { id, amount, description } = req.body;
+  const photo = req.file ? req.file.filename : null;
+
+  let sql = `UPDATE loan SET amount=?, item_description=?`;
+  const params = [amount, description];
+
+  if (photo) {
+    sql += `, photo=?`;
+    params.push(photo);
+  }
+
+  sql += ` WHERE id=?`;
+  params.push(id);
+
+  try {
+    await queryAsync(sql, params);
+    res.redirect('back');
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Loan update failed");
+  }
+});
 
 
 

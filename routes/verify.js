@@ -49,17 +49,14 @@ function adminAuthenticationToken(req,res,next){
 }
 
 
-
-function vendorAuthenticationToken(req,res,next){
-    if(req.session.vendorid) {
-      req.categories = true;
-       next();
-    }
-    else {
-      res.redirect('/login?message=Wrong Credentials')
-      next()
-    }
+function vendorAuthenticationToken(req, res, next) {
+  if (req.session.vendorid) {
+    req.categories = true;
+    return next();
+  } else {
+    return res.redirect('/login?message=Wrong Credentials');
   }
+}
   
 
 // async function vendorAuthenticationToken(req, res, next) {

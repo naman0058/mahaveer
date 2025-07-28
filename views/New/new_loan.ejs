@@ -10,14 +10,7 @@
                         <h1 class="pg-title" style="color: #1B5E20;">New Loan (नए गहने)</h1>
                         <p style="margin-top: 20px;"></p>
                     </div>
-                    <div class="pg-header-action-wrap">
-                        <div class="input-group w-300p">
-                            <span class="input-affix-wrapper">
-                                <span class="input-prefix"><span class="feather-icon"><i data-feather="calendar"></i></span></span>
-                                <input class="form-control form-wth-icon" name="date" id="date" readonly>
-                            </span>
-                        </div>
-                    </div>
+                    
                 </div>
             </div>
 
@@ -26,7 +19,8 @@
        
         </div>
         <!-- /Page Header -->									
-        <form class="row g-3 mt-5" id="myForm" method="post" enctype="multipart/form-data">
+        <form class="row g-3 mt-5" id="myForm" method="post" enctype="multipart/form-data" action="/dashboard/data/loan/insert">
+
             <div class="col-md-6">
                 <label for="customerSelect" class="form-label">Select Customer (ग्राहक चुनें)</label>
                 <select id="customerSelect" class="form-control select2">
@@ -48,13 +42,13 @@
             </div>
         
             <div class="col-md-6">
-                <label for="inputAddress" class="form-label">Item Name (आइटम का नाम)</label>
+                <label for="inputAddress" class="form-label">Item Name and Weight (आइटम का नाम वजन)</label>
                 <input type="text" name="item_name" id="item_name" class="form-control" placeholder="Item Name (आइटम का नाम)">
             </div>
             
             <div class="col-md-6">
-                <label for="inputCity" class="form-label">Item Weight (आइटम का वजन)</label>
-                <input class="form-control" id="item_weight" name="item_weight" placeholder="Item Weight (आइटम का वजन)">
+                <label for="inputCity" class="form-label">Date</label>
+                <input class="form-control" id="date" name="date" type="date" placeholder="Item Weight (आइटम का वजन)">
             </div>
         
             <div class="col-md-6">
@@ -83,7 +77,7 @@
             
             <div class="col-md-6">
                 <label for="inputCity" class="form-label">Item Image (आइटम की छवि)</label>
-                <input class="form-control" type="file" id="item_image" name="item_image">
+                <input class="form-control" type="file" id="photo" name="photo">
             </div>
             
             <div class="col-md-6">
@@ -97,6 +91,13 @@
         </form>
         
 
+
+        <div id="loader-overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(0,0,0,0.5); z-index:9999; justify-content:center; align-items:center;">
+  <div class="spinner-border text-light" role="status">
+    <span class="visually-hidden">Loading...</span>
+  </div>
+</div>
+
 <%- include ('.././footer.ejs') %>
 
 
@@ -106,115 +107,75 @@
 
 
 <script>
+
 function submitForm() {
     const customerid = $('#customerSelect').val();
     const father_name = $('#father_name').val();
     const number = $('#number').val();
     const item_name = $('#item_name').val();
-    const amount = $('#amount').val();
     const item_weight = $('#item_weight').val();
-    const item_image = $('#item_image').val();
+    const amount = $('#amount').val();
+    const photo = $('#photo')[0].files[0];
     const item_description = $('#item_description').val();
     const rate_of_interest = $('#rate_of_interest').val();
-    const customerName = $('#customerSelect option:selected').text().split(' S/O ')[0].trim();
     const date = $('#date').val();
-
-   const tokenno = generateToken()
-    
-
-
-    const photo = $('#photo').val();
     const address = $('#address').val();
-    // customerid validation checks
-    if (customerid === '') {
-        alert('Enter Customer Name');
-        return;
-    } else if (father_name === '') {
-        alert('Enter Father Name');
-        return;
-    } else if (item_name === '') {
-        alert('Enter Item Name');
-        return;
-    } else if (item_weight === '') {
-        alert('Enter Item Weight');
-        return;
-    }
-    else if (amount === '') {
-        alert('Enter Amount');
-        return;
-    }
-     else if (item_image === '') {
-        alert('Enter Item Image');
-        return;
-    } 
-   
-    else{
+    const customerName = $('#customerSelect option:selected').text().split(' S/O ')[0].trim();
+    const tokenno = generateToken();
 
-    const url = "https://api.cloudinary.com/v1_1/dciqc2rgl/image/upload";
+    if (!customerid || !father_name || !item_name  || !amount || !photo) {
+        alert('Please fill all required fields and select an image');
+        return;
+    }
+
     const loaderOverlay = document.getElementById("loader-overlay");
-    loaderOverlay.style.display = "flex"; // Show overlay
-
-    const fileInput = document.querySelector("[type=file]");
-    const file = fileInput.files[0];
-
-    // Check if a file is selected
-    if (!file) {
-        alert('No photo selected');
-        loaderOverlay.style.display = "none"; // Hide overlay if no file
-        return;
-    }
+    loaderOverlay.style.display = "flex";
 
     const formData = new FormData();
-    formData.append("file", file);
-    formData.append("upload_preset", "docs_upload_example_us_preset");
+    formData.append("customerid", customerid);
+    formData.append("item_name", item_name);
+    formData.append("item_weight", item_weight);
+    formData.append("photo", photo);
+    formData.append("item_description", item_description);
+    formData.append("rate_of_interest", rate_of_interest);
+    formData.append("amount", amount);
+    formData.append("tokenno", tokenno);
+    formData.append("created_at", date);
+    // formData.append("address", address);
 
-    // Upload the photo to Cloudinary
-    fetch(url, {
+    fetch("/dashboard/data/loan/insert", {
         method: "POST",
-        body: formData,
+        body: formData
     })
-        .then((response) => response.json())
-        .then((data) => {
-            const photoUrl = data.url; // Get uploaded photo URL
-
-            // Send customer data to the server
-            $.post('/dashboard/data/loan/insert', {customerid,item_name,item_weight,item_description,rate_of_interest,item_image:photoUrl,amount,tokenno}, (data) => {
-                if (data.msg === 'success') {
-                    createPrintLayout({
-        customerName,
-        father_name,
-        number,
-        item_name,
-        item_weight,
-        item_image,
-        item_description,
-        rate_of_interest,
-        address,
-        date,
-        amount,
-        tokenno
+    .then((response) => response.json())
+    .then((data) => {
+        loaderOverlay.style.display = "none";
+        if (data.msg == "success") {
+            alert('Loan Submitted Succesfully')
+            // createPrintLayout({
+            //     customerName,
+            //     father_name,
+            //     number,
+            //     item_name,
+            //     item_weight,
+            //     photo,
+            //     item_description,
+            //     rate_of_interest,
+            //     address,
+            //     date,
+            //     amount,
+            //     tokenno
+            // });
+        } else {
+            alert("Error: Something went wrong");
+        }
+    })
+    .catch((error) => {
+        loaderOverlay.style.display = "none";
+        console.error("Error:", error);
+        alert("An error occurred. Please try again.");
     });
-                    
-                } else {
-                    alert('An Error Occured Please Try again Later');
-                }
-                loaderOverlay.style.display = "none"; // Hide overlay after response
-            });
-        })
-        .catch((error) => {
-            console.error("Error:", error);
-            alert('Photo upload failed');
-            loaderOverlay.style.display = "none"; // Hide overlay if there's an error
-        });
 }
-
- }
-
-
-
- 
- 
-
 
 
   </script>
@@ -248,6 +209,14 @@ function submitForm() {
         right: 10px; /* Optional: Adjust for better alignment */
     }
     </style>
+
+
+
+
+<!-- Include these scripts before your script -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+
     
   <script>
     // Fetch and populate the dropdown
@@ -403,44 +372,67 @@ function generateToken() {
     return token;
 }
 
-function createPrintLayout(data){
-   // Use jsPDF to generate PDF
-   const { jsPDF } = window.jspdf;
+
+
+
+function createPrintLayout(data) {
+    const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
 
-    // Adding customer information
-    doc.setFontSize(12);
-    doc.text('Customer Information', 20, 20);
-    doc.text(`Date: ${data.date}`, 20, 30);
-    doc.text(`Date: ${data.tokenno}`, 20, 30);
-    doc.text(`Customer Name: ${data.customerName}`, 20, 40);
-    doc.text(`Father Name: ${data.father_name}`, 20, 50);
-    doc.text(`Number: ${data.number}`, 20, 60);
-    doc.text(`Item Name: ${data.item_name}`, 20, 70);
-    doc.text(`Item Weight: ${data.item_weight}`, 20, 80);
-    doc.text(`Amount: ${data.amount}`, 20, 90);
-    doc.text(`Item Description: ${data.item_description}`, 20, 100);
-    doc.text(`Rate of Interest: ${data.rate_of_interest}%`, 20, 110);
-    doc.text(`Address: ${data.address}`, 20, 120);
+    // Title
+    doc.setFontSize(16);
+    doc.setTextColor(40);
+    doc.text('Customer Pledge Receipt', 70, 15);
 
-    // Save the PDF locally
+    // Customer Info Table
+    const tableData = [
+        ['Date', data.date],
+        ['Token No.', data.tokenno],
+        ['Customer Name', data.customerName],
+        ['Father Name', data.father_name],
+        ['Phone Number', data.number],
+        ['Item Name', data.item_name],
+        ['Amount', data.amount],
+        ['Rate of Interest (%)', `${data.rate_of_interest}%`],
+        ['Address', data.address]
+        ['Item Description', data.item_description],
+
+    ];
+
+    doc.autoTable({
+        startY: 25,
+        head: [['Field', 'Details']],
+        body: tableData,
+        styles: {
+            fontSize: 11,
+            cellPadding: 4,
+        },
+        headStyles: {
+            fillColor: [52, 152, 219], // Blue Header
+            textColor: 255,
+            halign: 'left',
+        },
+        alternateRowStyles: {
+            fillColor: [240, 240, 240], // Light gray for alternate rows
+        },
+    });
+
+    // Save PDF
     const fileName = `Customer_${data.customerName}_${data.date}.pdf`;
     const pdfBlob = doc.output('blob');
     const pdfURL = URL.createObjectURL(pdfBlob);
 
-    // Option to download the PDF
+    // Download link
     const downloadLink = document.createElement('a');
     downloadLink.href = pdfURL;
     downloadLink.download = fileName;
     downloadLink.click();
 
-    // WhatsApp sharing with phone number
-    const whatsappMessage = `Customer: ${data.customerName}\n\nAmount: ${data.amount}\n\nDate: ${data.date}\n\nToken No.: ${data.tokenno}\n\nurl:${pdfURL}`;
-    const customerPhoneNumber = 91+data.number.replace(/\s/g, ''); // Clean phone number (remove spaces)
-    
+    // WhatsApp sharing
+    const whatsappMessage = `🧾 *Customer Receipt* \n\n👤 Name: ${data.customerName}\n💰 Amount: ${data.amount}\n📅 Date: ${data.date}\n🔖 Token No.: ${data.tokenno}\n\n🔗 PDF: ${pdfURL}`;
+    const customerPhoneNumber = `91${data.number.replace(/\s/g, '')}`;
     const whatsappLink = `https://api.whatsapp.com/send?phone=${customerPhoneNumber}&text=${encodeURIComponent(whatsappMessage)}`;
 
-    // Open WhatsApp share option with prefilled number
     window.open(whatsappLink, '_blank');
 }
 

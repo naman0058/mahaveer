@@ -2,117 +2,38 @@
 
 
 		<!-- Main Content -->
-		<div class="hk-pg-wrapper pb-0">
-			<!-- Page Body -->
-			<div class="hk-pg-body py-0">
-				<div class="contactapp-wrap">
-					
-					<div class="contactapp-content">
-						<div class="contactapp-detail-wrap">
-							<header class="contact-header">
-								<div class="d-flex align-items-center">
-									<div class="dropdown">
-										<a class="contactapp-title link-dark" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-											<h1 style="color: #1B5E20;">Investment List (गहने की सूची)</h1>
-										</a>
-									
-									</div>
-								
-								</div>
+		<div class="hk-pg-wrapper">
+  <div class="container-fluid py-4">
+    <div class="card shadow-sm">
+      <div class="card-header text-white" style="background-color: #004d52;color: white;">
+        <h5 class="mb-0" style="color: white;"><% if(result[0]) { %> <%=result[0].investorname%> <% } %> All Investment List (गहने की सूची)</h5>
+		<p><a href="/dashboard/investment/history?investorid=<%=investorid%>" style="color: white;"> History</a></p>
+      </div>
+</div>
+        <div class="table-responsive">
+          <table id="customerTable" class="table table-bordered table-hover table-striped">
+            <thead class="table-dark" style="background-color: #004d52;">
+              <tr>
+                <th style="color: white;">Name</th>
+                <!-- <th style="color: white;">Father's Name</th>-->
+                <!-- <th style="color: white;">Contact Number</th>  -->
+              </tr>
+            </thead>
+            <tbody>
+              <% for(let i = 0; i < result.length; i++) { %>
+                <tr>
+                  <td>
+                    <a href="/dashboard/loan/details?loanid=<%= result[i].id %>" class="fw-semibold text-decoration-none text-dark">
+                     <%=result[i].customername.toUpperCase()%> <span style="font-size: 12px;">S/O <%=result[i].customerfather_name.toUpperCase()%></span>	
+					  <p style="font-size: 12px;"><%=result[i].item_name%></p>
+					  <p style="font-size: 12px;">₹<%=result[i].amount%> (Rate of Interest  <%=result[i].transfer_rate%>%)</</p>
 
+					  <p style="font-size: 12px;"><%=result[i].transfer_date%>
+                    <% if(result[i].alternate_number) { %> / <%= result[i].alternate_number %> <% } %></p>
 
-								
-							</header>
-
-
-							<style>
-								.contact-card .card {
-									height: 100%; /* Ensures card stretches to fill the column height */
-									display: flex;
-									flex-direction: column; /* Allows content to flow from top to bottom */
-								}
-							
-								.contact-card .card-body {
-									flex-grow: 1; /* Makes the body grow to fill available space */
-									display: flex;
-									flex-direction: column;
-									align-items: center; /* Centers content horizontally */
-									justify-content: center; /* Centers content vertically */
-									/* text-align: center; */
-								}
-							
-								.contact-card .avatar {
-									margin-bottom: 10px; /* Adds spacing below the avatar */
-								}
-							
-								.contact-card .user-name, 
-								.contact-card .user-email, 
-								.contact-card .user-contact {
-									overflow: hidden;
-									text-overflow: ellipsis; /* Adds "..." to overflow text */
-									white-space: nowrap; /* Prevents text from wrapping to the next line */
-									width: 100%; /* Ensures full width */
-								}
-							
-								.contact-card .card-footer {
-									display: flex;
-									justify-content: center; /* Centers the footer content horizontally */
-								}
-							
-								.contact-card {
-									min-height: 100px; /* Sets a minimum height for the card to ensure consistency */
-								}
-
-								.card-body {
-    padding: 20px;
-}
-.user-info p {
-    font-size: 14px;
-    margin-bottom: 8px;
-}
-
-
-							</style>
-
-							<div class="contact-body">
-								<div data-simplebar class="nicescroll-bar">
-
-
-                                    <div class="container">
-                                        <!-- Search Input -->
-                                        <div class="mb-4">
-                                            <input type="text" id="search-input" class="form-control" placeholder="Search Loans...">
-                                        </div>
-                                    
-                                        <!-- Card Grid -->
-                                        <div class="row" id="contact-cards">
-                                            <!-- Contact Card 1 -->
-											<% if(result.length == 0){ %>
-                                                <p class="text-black" style="text-align: center;font-weight: bold;">No Data Found</p>
-                                                                                        <% } %>
-                                            <% for(i=0;i<result.length;i++) { %>
-
-												<div class="col-xl-3 col-lg-4 col-md-6 mb-4 contact-card">
-													<div class="card card-border contact-card" style="box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); border-radius: 10px;">
-														<div class="card-body text-center" style="padding: 20px;">
-															<!-- Avatar -->
-															<div class="avatar avatar-xl avatar-rounded" style="margin-bottom: 15px;">
-																<img src="<%=result[i].item_image%>" alt="user" class="avatar-img" style="border-radius: 50%; width: 100px; height: 100px; object-fit: cover; box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);">
-															</div>
-												
-															<!-- Customer Info -->
-															<div class="user-info">
-																<p><b>Customer Name - </b> <%=result[i].customername.toUpperCase()%></p>
-																<p><b>Father Name - </b> <%=result[i].customerfather_name.toUpperCase()%></p>
-																<p><b>Items - </b><%=result[i].item_name%></p>
-																<p><b>Weight - </b><%=result[i].item_weight%></p>
-																<% if(result[i].item_description) { %>
-																	<p><b>Additional - </b><%=result[i].item_description%></p>
-																<% } %>
-																<p><b>Date - </b> <%=result[i].transfer_date%></p>
-																<p><b>Amount - </b> ₹<%=result[i].amount%></p>
-																<p><b>Interest Rate - </b> <%=result[i].transfer_rate%>%</p>
-																<p><b>Time - </b>
+																
+																
+																<p style="font-size: 12px;"><b>Time - </b>
 																	<% if (result[i].timeDiff.years > 0) { %>
 																		<%= result[i].timeDiff.years %> Years
 																	<% } %>
@@ -126,63 +47,20 @@
 																		Less than a day
 																	<% } %>
 																</p>
-																<p><b>Interest Amount - </b> ₹<%= result[i].interestAmount.toFixed(2) %></p>
-															</div>
-														</div>
-												
-														<!-- Transfer Button -->
-														<div class="card-footer text-muted text-center" style="padding: 10px;">
-															<% if(result[i].istransfer == 'yes') { %>
-																<a href="#" class="text-success">
-																	<span class="fs-7 lh-1" style="font-weight: bold;"><%=result[i].investorname%> (<%=result[i].transfer_date%>)</span>
-																</a>
-															<% } else { %>
-																<a href="/loan/transfer?loanid=<%=result[i].id%>" class="btn btn-success" style="width: 100%; padding: 10px; font-size: 14px;">
-																	<i class="fas fa-exchange-alt"></i> Transfer
-																</a>
-															<% } %>
-														</div>
-													</div>
-												</div>
-                                            <% } %>
-                                            <!-- Contact Card 2 -->
-                                         
-                                    
-                                            <!-- Additional cards... -->
-                                        </div>
-                                    </div>
-                                    
-                                    <!-- Include Feather Icons -->
-                                    <script>
-                                        // feather.replace();
-                                    
-                                        // Search functionality
-                                        document.getElementById('search-input').addEventListener('input', function() {
-                                            const searchTerm = this.value.toLowerCase();
-                                            const cards = document.querySelectorAll('.contact-card');
-                                    
-                                            cards.forEach(card => {
-                                                const textContent = card.textContent.toLowerCase();
-                                                if (textContent.includes(searchTerm)) {
-                                                    card.style.display = 'block';
-                                                } else {
-                                                    card.style.display = 'none';
-                                                }
-                                            });
-                                        });
-                                    </script>
-                                    
-									
-									
-								</div>
-							</div>
-						</div>
-						
-					</div>
-				</div>
-			</div>
-			<!-- /Page Body -->
-		</div>
+																<p style="font-size: 12px;"><b>Interest Amount - </b> ₹<%= result[i].interestAmount.toFixed(2) %></p>
+                    </a>
+                  </td>
+                  
+                </tr>
+              <% } %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 		<!-- /Main Content -->
 	</div>
     <!-- /Wrapper -->
@@ -219,6 +97,24 @@
 	<script src="/dist/js/init.js"></script>
 	<script src="/dist/js/contact-data.js"></script>
 	<script src="/dist/js/chips-init.js"></script>
+
+
+<!-- ✅ DataTable Init -->
+<script>
+  $(document).ready(function () {
+    $('#customerTable').DataTable({
+      responsive: true,
+      pageLength: 50,
+      lengthMenu: [10, 25, 50, 100],
+      language: {
+        search: "_INPUT_",
+        searchPlaceholder: "Search customers..."
+      }
+    });
+  });
+</script>
+
+
 </body>
 
 <!-- Mirrored from hencework.com/theme/jampack/horizontal/contact.html by HTTrack Website Copier/3.x [XR&CO'2014], Sat, 07 Sep 2024 04:23:05 GMT -->

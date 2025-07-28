@@ -1,19 +1,27 @@
 <%- include ('.././header.ejs') %>
 
-<!-- Main Content -->
-<div class="hk-pg-wrapper">
+
+		<!-- Main Content -->
+		<div class="hk-pg-wrapper">
   <div class="container-fluid py-4">
     <div class="card shadow-sm">
       <div class="card-header text-white" style="background-color: #004d52;color: white;">
-        <h5 class="mb-0" style="color: white;">Customer List (ग्राहक की सूची)</h5>
+        <h5 class="mb-0" style="color: white;"> <% if(result[0]) { %> <%=result[0].customername%> <% } %>  All Loan List (ग्राहक की सूची)</h5>
+		
+		
+
+		<p><a href="/dashboard/loan/history?customerid=<%=customerid%>" style="color: white;"> History</a></p>
+
+			
+		
       </div>
-     </div>
+</div>
         <div class="table-responsive">
           <table id="customerTable" class="table table-bordered table-hover table-striped">
             <thead class="table-dark" style="background-color: #004d52;">
               <tr>
                 <th style="color: white;">Name</th>
-                <th style="color: white;">Edit</th>
+                <th style="color: white;">Action</th>
 
                 <!-- <th style="color: white;">Father's Name</th>-->
                 <!-- <th style="color: white;">Contact Number</th>  -->
@@ -23,10 +31,12 @@
               <% for(let i = 0; i < result.length; i++) { %>
                 <tr>
                   <td>
-                    <a href="/dashboard/view/loan?customerid=<%= result[i].id %>" class="fw-semibold text-decoration-none text-dark">
-                      <%= result[i].name.toUpperCase() %> <span style="font-size: 12px;">S/O <%= result[i].father_name.toUpperCase() %></span>	
-					  <p style="font-size: 12px;"><%= result[i].address %></p>
-					  <p style="font-size: 12px;"><%= result[i].number %>
+                    <a href="/dashboard/loan/details?loanid=<%= result[i].id %>" class="fw-semibold text-decoration-none text-dark">
+                     <%=result[i].customername.toUpperCase()%> <span style="font-size: 12px;">S/O <%=result[i].customerfather_name.toUpperCase()%></span>	
+					  <p style="font-size: 12px;"><%=result[i].item_name%></p>
+					  <p style="font-size: 12px;">₹<%=result[i].amount%></</p>
+
+					  <p style="font-size: 12px;"><%=result[i].created_at%>
                     <% if(result[i].alternate_number) { %> / <%= result[i].alternate_number %> <% } %></p>
 
 
@@ -36,23 +46,18 @@
 
                   <td>
                     <button 
-  class="btn btn-sm btn-outline-primary editCustomerBtn mt-2"
+  class="btn btn-sm btn-outline-primary mt-2 editLoanBtn"
   data-id="<%= result[i].id %>"
-  data-name="<%= result[i].name %>"
-  data-father="<%= result[i].father_name %>"
-  data-number="<%= result[i].number %>"
-  data-altnumber="<%= result[i].alternate_number || '' %>"
-  data-address="<%= result[i].address %>"
+  data-customername="<%= result[i].customername %>"
+  data-customerfather="<%= result[i].customerfather_name %>"
+  data-item="<%= result[i].item_name %>"
+  data-amount="<%= result[i].amount %>"
+  data-description="<%= result[i].item_description || '' %>"
   data-photo="<%= result[i].photo %>">
   Edit
 </button>
                   </td>
-
-                  <!-- <td><%= result[i].father_name.toUpperCase() %></td>-->
-                  <!-- <td>
-                    <%= result[i].number %>
-                    <% if(result[i].alternate_number) { %> / <%= result[i].alternate_number %> <% } %>
-                  </td>  -->
+                  
                 </tr>
               <% } %>
             </tbody>
@@ -63,53 +68,51 @@
   </div>
 </div>
 
+		<!-- /Main Content -->
+	</div>
+    <!-- /Wrapper -->
 
 
-<!-- Edit Customer Modal -->
-<div class="modal fade" id="editCustomerModal" tabindex="-1" aria-labelledby="editCustomerModalLabel" aria-hidden="true">
+<!-- Edit Loan Modal -->
+<div class="modal fade" id="editLoanModal" tabindex="-1" aria-labelledby="editLoanModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
-    <form action="/dashboard/update-customer" method="POST" enctype="multipart/form-data" class="modal-content">
+    <form action="/dashboard/update-loan" method="POST" enctype="multipart/form-data" class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Edit Customer</h5>
+        <h5 class="modal-title">Edit Loan Details</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body row g-3">
-        <input type="hidden" name="id" id="editCustomerId" />
-        
+        <input type="hidden" name="id" id="editLoanId" />
+
         <div class="col-md-6">
-          <label class="form-label">Name</label>
-          <input type="text" class="form-control" name="name" id="editCustomerName" required>
+          <label class="form-label">Customer Name</label>
+          <input type="text" class="form-control" id="editCustomerName" readonly>
         </div>
 
         <div class="col-md-6">
-          <label class="form-label">Father's Name</label>
-          <input type="text" class="form-control" name="father_name" id="editCustomerFather" required>
+          <label class="form-label">Item Name</label>
+          <input type="text" class="form-control" id="editItemName" readonly>
         </div>
 
         <div class="col-md-6">
-          <label class="form-label">Contact Number</label>
-          <input type="text" class="form-control" name="number" id="editCustomerNumber" required>
+          <label class="form-label">Loan Amount</label>
+          <input type="text" class="form-control" name="amount" id="editLoanAmount" required>
         </div>
 
         <div class="col-md-6">
-          <label class="form-label">Alternate Number</label>
-          <input type="text" class="form-control" name="alternate_number" id="editCustomerAltNumber">
-        </div>
-
-        <div class="col-md-12">
-          <label class="form-label">Address</label>
-          <textarea class="form-control" name="address" id="editCustomerAddress" rows="2" required></textarea>
+          <label class="form-label">Description</label>
+          <input type="text" class="form-control" name="description" id="editLoanDescription">
         </div>
 
         <div class="col-md-6">
           <label class="form-label">Existing Photo</label><br>
-          <img id="existingCustomerPhoto" src="" alt="Current Photo" style="max-height: 120px;" class="img-thumbnail">
+          <img id="existingLoanPhoto" src="#" alt="Current Loan Photo" style="max-height: 120px;" class="img-thumbnail">
         </div>
 
         <div class="col-md-6">
           <label class="form-label">Upload New Photo</label>
-          <input type="file" class="form-control" name="photo" id="editCustomerPhoto">
-          <img id="photoPreview" src="#" alt="New Preview" style="max-height: 120px; margin-top: 10px;" class="img-thumbnail d-none">
+          <input type="file" class="form-control" name="photo" id="editLoanPhoto">
+          <img id="loanPhotoPreview" src="#" alt="Preview" style="max-height: 120px; margin-top: 10px;" class="img-thumbnail d-none">
         </div>
       </div>
 
@@ -123,7 +126,8 @@
 
 
 
-   <script src="/vendors/jquery/dist/jquery.min.js"></script>
+	<!-- jQuery -->
+    <script src="/vendors/jquery/dist/jquery.min.js"></script>
 
     <!-- Bootstrap Core JS -->
    	<script src="/vendors/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
@@ -155,6 +159,7 @@
 	<script src="/dist/js/contact-data.js"></script>
 	<script src="/dist/js/chips-init.js"></script>
 
+
 <!-- ✅ DataTable Init -->
 <script>
   $(document).ready(function () {
@@ -171,32 +176,39 @@
 </script>
 
 
+</body>
+
+<!-- Mirrored from hencework.com/theme/jampack/horizontal/contact.html by HTTrack Website Copier/3.x [XR&CO'2014], Sat, 07 Sep 2024 04:23:05 GMT -->
+</html>
+
+
 <script>
-  $(document).on('click', '.editCustomerBtn', function () {
-    const customer = $(this).data();
-    $('#editCustomerId').val(customer.id);
-    $('#editCustomerName').val(customer.name);
-    $('#editCustomerFather').val(customer.father);
-    $('#editCustomerNumber').val(customer.number);
-    $('#editCustomerAltNumber').val(customer.altnumber);
-    $('#editCustomerAddress').val(customer.address);
-    
-    // const existingPhotoUrl = `/images/${customer.photo}`;
-    const existingPhotoUrl = `/uploads/${customer.photo}`;
+  $(document).on('click', '.editLoanBtn', function () {
+    const data = $(this).data();
 
-    $('#existingCustomerPhoto').attr('src', existingPhotoUrl);
+    $('#editLoanId').val(data.id);
+    $('#editCustomerName').val(data.customername + ' S/O ' + data.customerfather);
+    $('#editItemName').val(data.item);
+    $('#editLoanAmount').val(data.amount);
+    $('#editLoanDescription').val(data.description);
 
-    $('#photoPreview').attr('src', '#').addClass('d-none');
-    $('#editCustomerModal').modal('show');
+    // const photoUrl = `/images/${data.photo}`;
+    const photoUrl = `/uploads/${data.photo}`;
+
+    $('#existingLoanPhoto').attr('src', photoUrl);
+
+    $('#loanPhotoPreview').attr('src', '#').addClass('d-none');
+    $('#editLoanModal').modal('show');
   });
 
-  $('#editCustomerPhoto').on('change', function () {
+  $('#editLoanPhoto').on('change', function () {
     const reader = new FileReader();
     reader.onload = function (e) {
-      $('#photoPreview').attr('src', e.target.result).removeClass('d-none');
+      $('#loanPhotoPreview').attr('src', e.target.result).removeClass('d-none');
     };
     if (this.files[0]) {
       reader.readAsDataURL(this.files[0]);
     }
   });
 </script>
+

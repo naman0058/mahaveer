@@ -3,6 +3,47 @@
         <%- include ('.././header.ejs') %>
 
       
+        <style>
+  .card.card-wth-line {
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease;
+    background-color: #ffffff;
+  }
+
+  .card.card-wth-line:hover {
+    transform: translateY(-3px);
+  }
+
+  .card .card-title {
+    font-size: 16px;
+    color: #333333;
+  }
+
+  .card .card-footer {
+    background-color: #f9f9f9;
+    font-weight: 600;
+    padding: 12px 16px;
+    border-top: 1px solid #e0e0e0;
+  }
+
+  .pg-title {
+    font-size: 28px;
+    font-weight: bold;
+    color: #004d52;
+  }
+
+  .hk-pg-header p {
+    font-size: 14px;
+    color: #777;
+  }
+
+  .card-body img {
+    max-width: 36px;
+    margin-right: 10px;
+  }
+</style>
+
 
 		<!-- Chat Popup -->
 		
@@ -20,7 +61,25 @@
                             <div class="mb-lg-0 mb-2 me-8">
                                 <h1 class="pg-title">Welcome back</h1>
                                 <p>TrakMoney Fund Management Dashboard</p>
+                                                     <div id="qrCodeContainer">
+  <h3>Scan this QR code to open site on your mobile:</h3>
+  <img src="https://api.qrserver.com/v1/create-qr-code/?data=<%= encodeURIComponent(qrUrl) %>&size=100x100" alt="QR Code" />
+</div>
+
+<script>
+  // Simple mobile detection based on screen width or user agent
+  const isMobile = window.innerWidth <= 768 || /Mobi|Android/i.test(navigator.userAgent);
+
+  if (isMobile) {
+    document.getElementById('qrCodeContainer').style.display = 'none';
+  }
+</script>
                             </div>
+
+
+    
+
+  
                             <div class="pg-header-action-wrap">
                                 <div class="input-group w-300p">
                                     <span class="input-affix-wrapper">
@@ -41,7 +100,7 @@
 
 														
                     <div class="row">
-                        <div class="col-sm-3">
+                        <div class="col-lg-3 col-md-6 col-sm-12 mb-4">
                             <div class="card card-wth-line">
                                 <div class="card-line bg-success"></div>
                                 <div class="card-body" style="display: flex; align-items: center;">
@@ -54,7 +113,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-sm-3">
+                        <div class="col-lg-3 col-md-6 col-sm-12 mb-4">
                             <div class="card card-wth-line">
                                 <div class="card-line bg-primary"></div>
                                 <div class="card-body" style="display: flex; align-items: center;">
@@ -68,7 +127,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-sm-3">
+                        <div class="col-lg-3 col-md-6 col-sm-12 mb-4">
                             <div class="card card-wth-line">
                                 <div class="card-line bg-warning"></div>
                                 <div class="card-body" style="display: flex; align-items: center;">
@@ -82,7 +141,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-sm-3">
+                        <div class="col-lg-3 col-md-6 col-sm-12 mb-4">
                             <div class="card card-wth-line">
                                 <div class="card-line bg-danger"></div>
                                 <div class="card-body" style="display: flex; align-items: center;">
@@ -116,7 +175,7 @@
 
                           <% for(i=0;i<investorResults.length;i++){ %>
 
-                            <div class="col-sm-3">
+                            <div class="col-lg-3 col-md-6 col-sm-12 mb-4">
                                 <div class="card card-wth-line">
                                     <div class="card-line bg-primary"></div>
                                     <div class="card-body">
@@ -129,9 +188,10 @@
                                 </div>
                             </div>
                           
-                            </div>
+                            
 
                             <% } %>
+                            </div>
              
                 </div>
                 <!-- /Page Body -->		
