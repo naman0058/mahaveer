@@ -78,12 +78,12 @@ module.exports = function ({ viewsPath, publicPath }) {
     next();
   });
 
-  app.use((req, res, next) => {
-    if (!isLicenseValid && req.path !== '/license') {
-      return res.redirect('/license');
-    }
-    next();
-  });
+  // app.use((req, res, next) => {
+  //   if (!isLicenseValid && req.path !== '/license') {
+  //     return res.redirect('/license');
+  //   }
+  //   next();
+  // });
 
   // This is correct as publicPath is handled by server.js
   app.use(express.static(publicPath));
